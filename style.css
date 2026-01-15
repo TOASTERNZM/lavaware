@@ -1,4 +1,4 @@
-/* RESET / BASE */
+
 * {
   box-sizing: border-box;
 }
@@ -10,23 +10,23 @@ body {
   color: white;
 }
 
-/* HIDE ELEMENTS */
+
 .hidden {
   display: none;
 }
 
-/* KEY OVERLAY */
+
 #overlay {
   position: fixed;
   inset: 0;
-  background: #000; /* fully blocks background */
+  background: #000;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
 }
 
-/* MODAL */
+
 .modal {
   background: #141414;
   padding: 30px;
@@ -41,7 +41,7 @@ body {
   margin-bottom: 15px;
 }
 
-/* INPUT */
+
 .modal input {
   width: 100%;
   padding: 10px;
@@ -53,7 +53,7 @@ body {
   color: white;
 }
 
-/* BUTTON */
+
 .modal button {
   width: 100%;
   padding: 10px;
@@ -69,21 +69,21 @@ body {
   background: #ff1f1f;
 }
 
-/* ERROR TEXT */
+
 #error {
   color: #ff5c5c;
   margin-top: 10px;
   font-size: 14px;
 }
 
-/* MAIN SITE */
+
 #site {
   padding: 60px;
   max-width: 800px;
   margin: auto;
 }
 
-/* TITLES */
+
 h1 {
   font-size: 42px;
   margin-bottom: 5px;
@@ -94,7 +94,7 @@ h1 {
   margin-bottom: 30px;
 }
 
-/* CARDS */
+
 .card {
   background: #111;
   padding: 20px;
@@ -107,12 +107,11 @@ h1 {
   margin-top: 0;
 }
 
-/* LIST */
+
 .card ul {
   padding-left: 20px;
 }
 
-/* COPY BUTTON */
 .card button {
   margin-top: 10px;
   padding: 10px 16px;
@@ -128,18 +127,18 @@ h1 {
   background: #ff1f1f;
 }
 
-/* COPY STATUS */
+
 #copied {
   margin-top: 10px;
   color: #4cff4c;
 }
-/* APP LAYOUT */
+
+
 .app {
   display: flex;
   height: 100vh;
 }
 
-/* SIDEBAR */
 .sidebar {
   width: 220px;
   background: #0f0f0f;
@@ -160,23 +159,33 @@ h1 {
   color: white;
   cursor: pointer;
   border-radius: 6px;
+  transition: background 0.2s;
 }
 
 .sidebar button:hover {
   background: #ff3b3b;
 }
 
-/* CONTENT */
+
 .content {
   flex: 1;
   padding: 40px;
+  position: relative;
+  overflow: hidden;
 }
 
-/* PAGES */
+
 .page {
-  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
 }
 
 .page.active {
-  display: block;
+  opacity: 1;
+  pointer-events: all;
 }
