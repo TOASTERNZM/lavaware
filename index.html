@@ -55,24 +55,12 @@
       <h1>CS2</h1>
       <p>Internal tool features</p>
       <ul>
-        
         <li>Clean UI</li>
         <li>Fast performance</li>
         <li>Frequent updates</li>
       </ul>
     </div>
 
-    <div id="bb" clas="page active">
-     <h1>bb</h1>
-       <p>roblox script</p>
-      <ul>
-        <li>TEST</li>
-        <li>TEST</li>
-        <li>test</li>
-        
-      </ul>
-    </div>
-      
     <div id="bb" class="page">
       <h1>Bleeding Blades</h1>
       <p>Click copy script to get it</p>
@@ -87,7 +75,6 @@
 <script>
 let scriptsCache = null;
 const scriptURL = "https://raw.githubusercontent.com/TOASTERNZM/lavaware/main/bbscrip.json";
-
 
 function showPage(pageId) {
   const pages = document.querySelectorAll('.page');
@@ -122,7 +109,7 @@ function copyScript() {
   fetchScripts().then(data => {
     navigator.clipboard.writeText(data.bleedingBlades).then(() => {
       const msgEl = document.getElementById("copied");
-      msgEl.textContent = " Copied!";
+      msgEl.textContent = " Copied";
       setTimeout(() => msgEl.textContent = "", 2000);
     });
   });
