@@ -1,18 +1,32 @@
+/* RESET / BASE */
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: #0b0b0b;
+  color: white;
 }
 
+/* HIDE ELEMENTS */
+.hidden {
+  display: none;
+}
+
+/* KEY OVERLAY */
 #overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.75);
+  background: #000; /* fully blocks background */
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 9999;
 }
 
+/* MODAL */
 .modal {
   background: #141414;
   padding: 30px;
@@ -20,13 +34,14 @@ body {
   width: 300px;
   text-align: center;
   color: white;
-  box-shadow: 0 0 30px rgba(255,0,0,0.3);
+  box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
 }
 
 .modal h2 {
   margin-bottom: 15px;
 }
 
+/* INPUT */
 .modal input {
   width: 100%;
   padding: 10px;
@@ -34,8 +49,11 @@ body {
   border: none;
   margin-bottom: 12px;
   text-align: center;
+  background: #1a1a1a;
+  color: white;
 }
 
+/* BUTTON */
 .modal button {
   width: 100%;
   padding: 10px;
@@ -44,14 +62,74 @@ body {
   background: #ff3b3b;
   color: white;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .modal button:hover {
   background: #ff1f1f;
 }
 
+/* ERROR TEXT */
 #error {
   color: #ff5c5c;
   margin-top: 10px;
   font-size: 14px;
+}
+
+/* MAIN SITE */
+#site {
+  padding: 60px;
+  max-width: 800px;
+  margin: auto;
+}
+
+/* TITLES */
+h1 {
+  font-size: 42px;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: #aaa;
+  margin-bottom: 30px;
+}
+
+/* CARDS */
+.card {
+  background: #111;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+.card h2 {
+  margin-top: 0;
+}
+
+/* LIST */
+.card ul {
+  padding-left: 20px;
+}
+
+/* COPY BUTTON */
+.card button {
+  margin-top: 10px;
+  padding: 10px 16px;
+  background: #ff3b3b;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.card button:hover {
+  background: #ff1f1f;
+}
+
+/* COPY STATUS */
+#copied {
+  margin-top: 10px;
+  color: #4cff4c;
 }
