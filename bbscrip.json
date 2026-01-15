@@ -1,0 +1,3 @@
+{
+  "bleedingBlades": "loadstring(game:HttpGet(\"https://raw.githubusercontent.com/curvedflame/Lavaware/refs/heads/main/bleedingblades.lua\"))()"
+}
