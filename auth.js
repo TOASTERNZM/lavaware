@@ -1,63 +1,28 @@
-function isValidFormat(key) {
-  return /^[A-Z0-9]{6}-[A-Z0-9]{6}-[A-Z0-9]{6}$/.test(key);
-}
-
 async function submitKey() {
-  const keyInput = document.getElementById("keyInput");
+  const input = document.getElementById("keyInput").value.trim();
   const error = document.getElementById("error");
 
-  const key = keyInput.value.trim().toUpperCase();
-  error.textContent = "";
-
-  if (!isValidFormat(key)) {
-    error.textContent = "Invalid key format";
-    return;
-  }
-
   try {
-    // IMPORTANT: fetch from repo root (GitHub Pages)
-    const res = await fetch("keys.json", {
-      cache: "no-store"
-    });
+    const response = await fetch("keys.json");
+    const data = await response.json();
 
-    if (!res.ok) {
-      throw new Error("HTTP " + res.status);
-    }
-
-    const keys = await res.json();
-
-    if (!keys[key]) {
+    if (data.keys.includes(input)) {
+      unlockSite();
+    } else {
       error.textContent = "Invalid key";
-      return;
     }
-
-    unlock(); 
-  } catch (err) {
-    console.error("Key verification failed:", err);
-    error.textContent = "Failed to verify key";
+  } catch (e) {
+    error.textContent = "Key system error";
   }
 }
 
-function unlock() {
-  
+function unlockSite() {
   document.getElementById("overlay").style.display = "none";
-
-  /
-  const content = document.getElementById("content");
-  content.style.display = "block";
-
- 
-  content.innerHTML = `
-    <h1 style="color:white;">Choose a download</h1>
-
-    <div style="display:flex; gap:15px; flex-wrap:wrap;">
-      <button onclick="downloadFile('tool1.zip')">Tool 1</button>
-      <button onclick="downloadFile('tool2.zip')">Tool 2</button>
-      <button onclick="downloadFile('tool3.zip')">Tool 3</button>
-    </div>
-  `;
+  document.getElementById("site").classList.remove("hidden");
 }
 
-function downloadFile(file) {
-  window.location.href = "files/" + file;
+function copyScript() {
+  const script = `print("Lavaware Loaded")`;
+  navigator.clipboard.writeText(script);
+  document.getElementById("copied").textContent = "Copied to clipboard!";
 }
