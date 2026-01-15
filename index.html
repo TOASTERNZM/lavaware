@@ -63,7 +63,12 @@
 
     <div id="bb" class="page">
       <h1>Bleeding Blades</h1>
-      <p>Click copy script to get it</p>
+      <p>Script features:</p>
+      <ul>
+        <li>Feature 1</li>
+        <li>Feature 2</li>
+        <li>Feature 3</li>
+      </ul>
       <button onclick="copyScript()">Copy Script</button>
       <button onclick="downloadScript()">⬇ Download Script</button>
       <p id="copied"></p>
@@ -109,7 +114,7 @@ function copyScript() {
   fetchScripts().then(data => {
     navigator.clipboard.writeText(data.bleedingBlades).then(() => {
       const msgEl = document.getElementById("copied");
-      msgEl.textContent = " Copied";
+      msgEl.textContent = "✅ Copied!";
       setTimeout(() => msgEl.textContent = "", 2000);
     });
   });
