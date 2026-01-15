@@ -90,8 +90,7 @@ function copyText(text, msgElementId) {
 }
 
 function copyScript() {
-  const script = `-- Bleeding Blades Script Example
-print("Hello from Bleeding Blades")`;
+  const script = `--loadstring(game:HttpGet("https://raw.githubusercontent.com/curvedflame/Lavaware/refs/heads/main/bleedingblades.lua"))()`;
   copyText(script, "copied");
 }
 
