@@ -1,4 +1,24 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lavaware</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="locked">
+
+<!-- KEY OVERLAY -->
+<div id="overlay">
+  <div class="modal">
+    <h2>Enter Access Key</h2>
+    <input type="text" id="keyInput" placeholder="XXXXXX-XXXXXX-XXXXXX">
+    <button type="button" onclick="submitKey()">Unlock</button>
+    <p id="error"></p>
+  </div>
+</div>
+
+<!-- MAIN APP (LOCKED) -->
 <div id="site" class="hidden app">
 
   <!-- SIDEBAR -->
@@ -34,46 +54,6 @@
   </div>
 </div>
 
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Lavaware</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<!-- KEY OVERLAY -->
-<div id="overlay">
-  <div class="modal">
-    <h2>Enter Access Key</h2>
-    <input type="text" id="keyInput" placeholder="XXXXXX-XXXXXX-XXXXXX">
-    <button onclick="submitKey()">Unlock</button>
-    <p id="error"></p>
-  </div>
-</div>
-
-<!-- MAIN SITE (LOCKED) -->
-<div id="site" class="hidden">
-  <h1>Lavaware</h1>
-  <p class="subtitle">Multi-Game Tool Suite</p>
-
-  <div class="card">
-    <h2>CS2 Features</h2>
-    <ul>
-      <li>Clean & simple UI</li>
-      <li>Lightweight & fast</li>
-      <li>Secure & stable</li>
-      <li>Frequent updates</li>
-    </ul>
-  </div>
-
-  <div class="card">
-    <h2>Script</h2>
-    <button onclick="copyScript()">Copy Script</button>
-    <p id="copied"></p>
-  </div>
-</div>
-
-<script src="auth.js"></script>
+<script src="./auth.js"></script>
 </body>
 </html>
