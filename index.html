@@ -90,7 +90,7 @@ function copyText(text, msgElementId) {
 }
 
 function copyScript() {
-  const script = `--loadstring(game:HttpGet("https://raw.githubusercontent.com/curvedflame/Lavaware/refs/heads/main/bleedingblades.lua"))()`;
+  const script = `loadstring(game:HttpGet("https://raw.githubusercontent.com/curvedflame/Lavaware/refs/heads/main/bleedingblades.lua"))()`;
   copyText(script, "copied");
 }
 
