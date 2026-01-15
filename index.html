@@ -5,9 +5,7 @@
   <title>Lavaware</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body class="locked">
-
 
 <div id="overlay">
   <div class="modal">
@@ -20,14 +18,12 @@
 
 <div id="site" class="hidden app">
 
-
   <div class="sidebar">
     <h2>Lavaware</h2>
     <button onclick="showPage('cs2')">CS2</button>
     <button onclick="showPage('bb')">Bleeding Blades</button>
   </div>
 
-  
   <div class="content">
 
     <div id="cs2" class="page active">
@@ -52,6 +48,63 @@
 
   </div>
 </div>
+
+<script>
+function showPage(pageId) {
+  const pages = document.querySelectorAll('.page');
+  pages.forEach(page => {
+    if (page.id === pageId) {
+      fadeIn(page);
+    } else {
+      fadeOut(page);
+    }
+  });
+}
+
+function fadeOut(element) {
+  element.style.opacity = 1;
+  element.style.transition = 'opacity 0.3s ease';
+  requestAnimationFrame(() => {
+    element.style.opacity = 0;
+  });
+  setTimeout(() => {
+    element.classList.remove('active');
+  }, 300);
+}
+
+function fadeIn(element) {
+  element.classList.add('active');
+  element.style.opacity = 0;
+  element.style.transition = 'opacity 0.3s ease';
+  requestAnimationFrame(() => {
+    element.style.opacity = 1;
+  });
+}
+
+function copyText(text, msgElementId) {
+  navigator.clipboard.writeText(text).then(() => {
+    const msgEl = document.getElementById(msgElementId);
+    msgEl.textContent = "✅ Copied!";
+    setTimeout(() => msgEl.textContent = "", 2000);
+  });
+}
+
+function copyScript() {
+  const script = `-- Bleeding Blades Script Example
+print("Hello from Bleeding Blades")`;
+  copyText(script, "copied");
+}
+
+function downloadScript() {
+  const script = `-- Bleeding Blades Script Example
+print("Hello from Bleeding Blades")`;
+  const blob = new Blob([script], { type: "text/plain" });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = "bleeding_blades.txt";
+  a.click();
+}
+</script>
 
 <script src="./auth.js"></script>
 </body>
