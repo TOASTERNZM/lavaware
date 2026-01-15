@@ -1,4 +1,39 @@
 <!DOCTYPE html>
+<div id="site" class="hidden app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>Lavaware</h2>
+    <button onclick="showPage('cs2')">CS2</button>
+    <button onclick="showPage('bb')">Bleeding Blades</button>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <div id="cs2" class="page active">
+      <h1>CS2</h1>
+      <p>Internal tool features</p>
+      <ul>
+        <li>Clean UI</li>
+        <li>Fast performance</li>
+        <li>Frequent updates</li>
+      </ul>
+    </div>
+
+    <div id="bb" class="page">
+      <h1>Bleeding Blades</h1>
+      <p>Script options</p>
+
+      <button onclick="copyScript()">📋 Copy Script</button>
+      <button onclick="downloadScript()">⬇ Download Script</button>
+
+      <p id="copied"></p>
+    </div>
+
+  </div>
+</div>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
