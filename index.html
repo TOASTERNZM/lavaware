@@ -1,1 +1,230 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <title>Lavaware</title> <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet"> <style> * { box-sizing: border-box; } body { margin: 0; font-family: Arial, sans-serif; background: #0b0b0b; color: white; } .hidden { display: none; } #overlay { position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; } .modal { background: #141414; padding: 30px; border-radius: 12px; width: 300px; text-align: center; color: white; box-shadow: 0 0 30px rgba(255,0,0,0.3); } .modal h2 { margin-bottom: 15px; } .modal input { width: 100%; padding: 10px; border-radius: 6px; border: none; margin-bottom: 12px; text-align: center; background: #1a1a1a; color: white; } .modal button { width: 100%; padding: 10px; border: none; border-radius: 6px; background: #ff3b3b; color: white; cursor: pointer; font-weight: bold; } .modal button:hover { background: #ff1f1f; } #error { color: #ff5c5c; margin-top: 10px; font-size: 14px; } .app { display: flex; height: 100vh; } .sidebar { width: 220px; background: #0a0a0a; padding: 20px; border-right: 1px solid #222; box-shadow: 0 0 20px rgba(255,0,100,0.2); } .sidebar h2 { margin-bottom: 20px; font-family: 'Orbitron', sans-serif; font-weight: bold; color: #ff3b3b; text-shadow: 0 0 8px #ff3b3b,0 0 16px #ff3b3b80; letter-spacing: 1px; } .sidebar button { width: 100%; margin-bottom: 12px; padding: 12px; background: #1a1a1a; border: none; color: #ff3b3b; font-weight: bold; cursor: pointer; border-radius: 6px; text-transform: uppercase; transition: all 0.3s ease; box-shadow: 0 0 5px #ff3b3b50; } .sidebar button:hover { background: #ff3b3b10; color: #fff; box-shadow: 0 0 20px #ff3b3b,0 0 40px #ff3b3b80; transform: scale(1.05); } .content { flex: 1; padding: 40px; position: relative; overflow: hidden; background: linear-gradient(145deg,#0b0b0b,#111111); border-radius: 12px; box-shadow: 0 0 30px rgba(255,0,100,0.3); } .page { position: absolute; top: 0; left: 0; width: 100%; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; } .page.active { opacity: 1; pointer-events: all; } .page h1 { font-family: 'Orbitron', sans-serif; color: #ff3b3b; text-shadow: 0 0 10px #ff3b3b,0 0 20px #ff3b3b80; } .page p, .page ul li { color: #ccc; text-shadow: 0 0 4px #ff3b3b20; } .page button { background: #ff3b3b10; border: 1px solid #ff3b3b; color: #ff3b3b; padding: 10px 16px; margin-top: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 0 5px #ff3b3b50; } .page button:hover { background: #ff3b3b20; box-shadow: 0 0 15px #ff3b3b,0 0 30px #ff3b3b80; transform: scale(1.05); color: #fff; } #copied { margin-top: 10px; color: #4cff4c; text-shadow: 0 0 10px #4cff4c; } </style> </head> <body class="locked"> <div id="overlay"> <div class="modal"> <h2>Enter Access Key</h2> <input type="text" id="keyInput" placeholder="XXXXXX-XXXXXX-XXXXXX"> <button type="button" onclick="submitKey()">Unlock</button> <p id="error"></p> </div> </div> <div id="site" class="hidden app"> <div class="sidebar"> <h2>Lavaware</h2> <button onclick="showPage('cs2')">CS2</button> <button onclick="showPage('bb')">Bleeding Blades</button> </div> <div class="content"> <div id="cs2" class="page active"> <h1>CS2</h1> <p>Internal tool features</p> <ul> <li>Clean UI</li> <li>Fast performance</li> <li>Frequent updates</li> </ul> </div> <div id="bb" class="page"> <h1>Bleeding Blades</h1> <p>Script features:</p> <ul> <li>Feature 1</li> <li>Feature 2</li> <li>Feature 3</li> </ul> <button onclick="copyScript()">Copy Script</button> <button onclick="downloadScript()">⬇ Download Script</button> <p id="copied"></p> </div> </div> </div> <script> let scriptsCache = null; const scriptURL = "https://raw.githubusercontent.com/TOASTERNZM/lavaware/main/bbscrip.json"; function showPage(pageId) { const pages = document.querySelectorAll('.page'); pages.forEach(page => page.id === pageId ? fadeIn(page) : fadeOut(page)); } function fadeOut(element) { element.style.opacity = 1; element.style.transition = 'opacity 0.3s ease'; requestAnimationFrame(() => element.style.opacity = 0); setTimeout(() => element.classList.remove('active'), 300); } function fadeIn(element) { element.classList.add('active'); element.style.opacity = 0; element.style.transition = 'opacity 0.3s ease'; requestAnimationFrame(() => element.style.opacity = 1); } function fetchScripts() { if (scriptsCache) return Promise.resolve(scriptsCache); return fetch(scriptURL) .then(res => res.json()) .then(data => { scriptsCache = data; return data; }); } function copyScript() { fetchScripts().then(data => { navigator.clipboard.writeText(data.bleedingBlades).then(() => { const msgEl = document.getElementById("copied"); msgEl.textContent = "✅ Copied!"; setTimeout(() => msgEl.textContent = "", 2000); }); }); } function downloadScript() { fetchScripts().then(data => { const blob = new Blob([data.bleedingBlades], { type: "text/plain" }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "bleeding_blades.txt"; a.click(); }); } </script> <script src="./auth.js"></script> </body> </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lavaware</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #0b0b0b; color: white; }
+    .hidden { display: none; }
+    #overlay {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .modal {
+      background: #141414;
+      padding: 30px;
+      border-radius: 12px;
+      width: 300px;
+      text-align: center;
+      color: white;
+      box-shadow: 0 0 30px rgba(255,0,0,0.3);
+    }
+    .modal h2 { margin-bottom: 15px; }
+    .modal input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      margin-bottom: 12px;
+      text-align: center;
+      background: #1a1a1a;
+      color: white;
+    }
+    .modal button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #ff3b3b;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .modal button:hover { background: #ff1f1f; }
+    #error { color: #ff5c5c; margin-top: 10px; font-size: 14px; }
+    .app { display: flex; height: 100vh; }
+    .sidebar {
+      width: 220px;
+      background: #0a0a0a;
+      padding: 20px;
+      border-right: 1px solid #222;
+      box-shadow: 0 0 20px rgba(255,0,100,0.2);
+    }
+    .sidebar h2 {
+      margin-bottom: 20px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      color: #ff3b3b;
+      text-shadow: 0 0 8px #ff3b3b,0 0 16px #ff3b3b80;
+      letter-spacing: 1px;
+    }
+    .sidebar button {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 12px;
+      background: #1a1a1a;
+      border: none;
+      color: #ff3b3b;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 6px;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 5px #ff3b3b50;
+    }
+    .sidebar button:hover {
+      background: #ff3b3b10;
+      color: #fff;
+      box-shadow: 0 0 20px #ff3b3b,0 0 40px #ff3b3b80;
+      transform: scale(1.05);
+    }
+    .content {
+      flex: 1;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(145deg,#0b0b0b,#111111);
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(255,0,100,0.3);
+    }
+    .page {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .page.active { opacity: 1; pointer-events: all; }
+    .page h1 { font-family: 'Orbitron', sans-serif; color: #ff3b3b; text-shadow: 0 0 10px #ff3b3b,0 0 20px #ff3b3b80; }
+    .page p, .page ul li { color: #ccc; text-shadow: 0 0 4px #ff3b3b20; }
+    .page button {
+      background: #ff3b3b10;
+      border: 1px solid #ff3b3b;
+      color: #ff3b3b;
+      padding: 10px 16px;
+      margin-top: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 5px #ff3b3b50;
+    }
+    .page button:hover {
+      background: #ff3b3b20;
+      box-shadow: 0 0 15px #ff3b3b,0 0 30px #ff3b3b80;
+      transform: scale(1.05);
+      color: #fff;
+    }
+    #copied { margin-top: 10px; color: #4cff4c; text-shadow: 0 0 10px #4cff4c; }
+  </style>
+</head>
+
+<body class="locked">
+  <div id="overlay">
+    <div class="modal">
+      <h2>Enter Access Key</h2>
+      <input type="text" id="keyInput" placeholder="XXXXXX-XXXXXX-XXXXXX">
+      <button type="button" onclick="submitKey()">Unlock</button>
+      <p id="error"></p>
+    </div>
+  </div>
+
+  <div id="site" class="hidden app">
+    <div class="sidebar">
+      <h2>Lavaware</h2>
+      <button onclick="showPage('cs2')">CS2</button>
+      <button onclick="showPage('bb')">Bleeding Blades</button>
+    </div>
+
+    <div class="content">
+      <div id="cs2" class="page active">
+        <h1>CS2</h1>
+        <p>Internal tool features</p>
+        <ul>
+          <li>Clean UI</li>
+          <li>Fast performance</li>
+          <li>Frequent updates</li>
+        </ul>
+      </div>
+
+      <div id="bb" class="page">
+        <h1>Bleeding Blades</h1>
+        <p>Script features:</p>
+        <ul>
+          <li>Feature 1</li>
+          <li>Feature 2</li>
+          <li>Feature 3</li>
+        </ul>
+        <button onclick="copyScript()">Copy Script</button>
+        <button onclick="downloadScript()">⬇ Download Script</button>
+        <p id="copied"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let scriptsCache = null;
+    const scriptURL = "https://raw.githubusercontent.com/TOASTERNZM/lavaware/main/bbscrip.json";
+
+    function showPage(pageId) {
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(page => page.id === pageId ? fadeIn(page) : fadeOut(page));
+    }
+
+    function fadeOut(element) {
+      element.style.opacity = 1;
+      element.style.transition = 'opacity 0.3s ease';
+      requestAnimationFrame(() => element.style.opacity = 0);
+      setTimeout(() => element.classList.remove('active'), 300);
+    }
+
+    function fadeIn(element) {
+      element.classList.add('active');
+      element.style.opacity = 0;
+      element.style.transition = 'opacity 0.3s ease';
+      requestAnimationFrame(() => element.style.opacity = 1);
+    }
+
+    function fetchScripts() {
+      if (scriptsCache) return Promise.resolve(scriptsCache);
+      return fetch(scriptURL)
+        .then(res => res.json())
+        .then(data => {
+          scriptsCache = data;
+          return data;
+        });
+    }
+
+    function copyScript() {
+      fetchScripts().then(data => {
+        navigator.clipboard.writeText(data.bleedingBlades).then(() => {
+          const msgEl = document.getElementById("copied");
+          msgEl.textContent = "✅ Copied!";
+          setTimeout(() => msgEl.textContent = "", 2000);
+        });
+      });
+    }
+
+    function downloadScript() {
+      fetchScripts().then(data => {
+        const blob = new Blob([data.bleedingBlades], { type: "text/plain" });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = "bleeding_blades.txt";
+        a.click();
+      });
+    }
+  </script>
+
+  <script src="./auth.js"></script>
+</body>
+</html>
