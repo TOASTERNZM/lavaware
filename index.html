@@ -7,15 +7,17 @@
 </head>
 <body>
 
-<!-- KEY SYSTEM -->
-<div id="key-screen">
-  <h1>Lavaware Access</h1>
-  <input type="text" id="keyInput" placeholder="Enter access key">
-  <button onclick="checkKey()">Unlock</button>
-  <p id="keyError"></p>
+<!-- KEY OVERLAY -->
+<div id="overlay">
+  <div class="modal">
+    <h2>Enter Access Key</h2>
+    <input type="text" id="keyInput" placeholder="XXXXXX-XXXXXX-XXXXXX">
+    <button onclick="submitKey()">Unlock</button>
+    <p id="error"></p>
+  </div>
 </div>
 
-<!-- MAIN SITE -->
+<!-- MAIN SITE (LOCKED) -->
 <div id="site" class="hidden">
   <h1>Lavaware</h1>
   <p class="subtitle">Multi-Game Tool Suite</p>
@@ -25,24 +27,18 @@
     <ul>
       <li>Clean & simple UI</li>
       <li>Lightweight & fast</li>
-      <li>Secure & undetected</li>
+      <li>Secure & stable</li>
       <li>Frequent updates</li>
     </ul>
   </div>
 
   <div class="card">
-    <h2>Bleeding Blades Script</h2>
-    <ul>
-      <li>Kill Aura</li>
-      <li>Hitbox Expander</li>
-      <li>Voice Spam</li>
-      <li>Undetected for 1+ year</li>
-    </ul>
+    <h2>Script</h2>
     <button onclick="copyScript()">Copy Script</button>
     <p id="copied"></p>
   </div>
 </div>
 
-<script src="script.js"></script>
+<script src="auth.js"></script>
 </body>
 </html>
