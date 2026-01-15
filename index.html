@@ -78,9 +78,6 @@
 </div>
 
 <script>
-let scriptsCache = null;
-const scriptURL = "https://raw.githubusercontent.com/TOASTERNZM/lavaware/main/bbscrip.json";
-
 function showPage(pageId) {
   const pages = document.querySelectorAll('.page');
   pages.forEach(page => page.id === pageId ? fadeIn(page) : fadeOut(page));
@@ -100,37 +97,48 @@ function fadeIn(element) {
   requestAnimationFrame(() => element.style.opacity = 1);
 }
 
-function fetchScripts() {
-  if (scriptsCache) return Promise.resolve(scriptsCache);
-  return fetch(scriptURL)
-    .then(res => res.json())
-    .then(data => {
-      scriptsCache = data;
-      return data;
-    });
-}
-
 function copyScript() {
-  fetchScripts().then(data => {
-    navigator.clipboard.writeText(data.bleedingBlades).then(() => {
-      const msgEl = document.getElementById("copied");
-      msgEl.textContent = "✅ Copied!";
-      setTimeout(() => msgEl.textContent = "", 2000);
-    });
+  fetch("https://hidden-mode-5dee.casdcasca26.workers.dev/bb", {
+    headers: {
+      "X-Lava-Key": localStorage.getItem("lava_auth")
+    }
+  })
+  .then(response => {
+    if (!response.ok) throw new Error("Access denied");
+    return response.text();
+  })
+  .then(script => {
+    navigator.clipboard.writeText(script);
+    const msgEl = document.getElementById("copied");
+    msgEl.textContent = "✅ Copied!";
+    setTimeout(() => msgEl.textContent = "", 2000);
+  })
+  .catch(() => {
+    const msgEl = document.getElementById("copied");
+    msgEl.textContent = "❌ Access denied";
   });
 }
 
 function downloadScript() {
-  fetchScripts().then(data => {
-    const blob = new Blob([data.bleedingBlades], { type: "text/plain" });
+  fetch("https://hidden-mode-5dee.casdcasca26.workers.dev/bb", {
+    headers: {
+      "X-Lava-Key": localStorage.getItem("lava_auth")
+    }
+  })
+  .then(response => {
+    if (!response.ok) throw new Error("Access denied");
+    return response.text();
+  })
+  .then(script => {
+    const blob = new Blob([script], { type: "text/plain" });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = "bleeding_blades.txt";
     a.click();
+  })
+  .catch(() => {
+    const msgEl = document.getElementById("copied");
+    msgEl.textContent = "❌ Access denied";
   });
 }
 </script>
-
-<script src="./auth.js"></script>
-</body>
-</html>
