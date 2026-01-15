@@ -63,8 +63,8 @@
 
     <div id="bb" class="page">
       <h1>Bleeding Blades</h1>
-      <p>CLICK COPY SCRIPT TO GET THE SCRIPT DUHHH </p>
-      <button onclick="copyScript()">📋 Copy Script</button>
+      <p>Click copy script to get it</p>
+      <button onclick="copyScript()">Copy Script</button>
       <button onclick="downloadScript()">⬇ Download Script</button>
       <p id="copied"></p>
     </div>
@@ -73,12 +73,12 @@
 </div>
 
 <script>
+let scriptsCache = null;
+const scriptURL = "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/bbscrip.json";
+
 function showPage(pageId) {
   const pages = document.querySelectorAll('.page');
-  pages.forEach(page => {
-    if (page.id === pageId) fadeIn(page);
-    else fadeOut(page);
-  });
+  pages.forEach(page => page.id === pageId ? fadeIn(page) : fadeOut(page));
 }
 
 function fadeOut(element) {
@@ -95,27 +95,34 @@ function fadeIn(element) {
   requestAnimationFrame(() => element.style.opacity = 1);
 }
 
-function copyText(text, msgElementId) {
-  navigator.clipboard.writeText(text).then(() => {
-    const msgEl = document.getElementById(msgElementId);
-    msgEl.textContent = "✅ Copied!";
-    setTimeout(() => msgEl.textContent = "", 2000);
-  });
+function fetchScripts() {
+  if (scriptsCache) return Promise.resolve(scriptsCache);
+  return fetch(scriptURL)
+    .then(res => res.json())
+    .then(data => {
+      scriptsCache = data;
+      return data;
+    });
 }
 
 function copyScript() {
-  const script = `loadstring(game:HttpGet("https://raw.githubusercontent.com/curvedflame/Lavaware/refs/heads/main/bleedingblades.lua"))()`;
-  copyText(script, "copied");
+  fetchScripts().then(data => {
+    navigator.clipboard.writeText(data.bleedingBlades).then(() => {
+      const msgEl = document.getElementById("copied");
+      msgEl.textContent = " Copied!";
+      setTimeout(() => msgEl.textContent = "", 2000);
+    });
+  });
 }
 
 function downloadScript() {
-  const script = `-- Bleeding Blades Script Example
-print("Hello from Bleeding Blades")`;
-  const blob = new Blob([script], { type: "text/plain" });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = "bleeding_blades.txt";
-  a.click();
+  fetchScripts().then(data => {
+    const blob = new Blob([data.bleedingBlades], { type: "text/plain" });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = "bleeding_blades.txt";
+    a.click();
+  });
 }
 </script>
 
