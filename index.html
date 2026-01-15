@@ -176,12 +176,14 @@
       const pages = document.querySelectorAll('.page');
       pages.forEach(page => page.id === pageId ? fadeIn(page) : fadeOut(page));
     }
+
     function fadeOut(element) {
       element.style.opacity = 1;
       element.style.transition = 'opacity 0.3s ease';
       requestAnimationFrame(() => element.style.opacity = 0);
       setTimeout(() => element.classList.remove('active'), 300);
     }
+
     function fadeIn(element) {
       element.classList.add('active');
       element.style.opacity = 0;
@@ -189,48 +191,44 @@
       requestAnimationFrame(() => element.style.opacity = 1);
     }
 
-    function unlockSite() {
-      document.getElementById("overlay").style.display = "none";
-      document.getElementById("site").classList.remove("hidden");
-      document.body.classList.remove("locked");
-    }
-
     function copyScript() {
-      fetch("https://hidden-mode-5dee.casdcasca26.workers.dev/bb", {
-        headers: { "X-Lava-Key": localStorage.getItem("lava_auth") || "" }
-      })
-      .then(res => { if (!res.ok) throw new Error("Access denied"); return res.text(); })
-      .then(script => {
-        navigator.clipboard.writeText(script).then(() => {
+      fetch("https://hidden-mode-5dee.casdcasca26.workers.dev/bb")
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to fetch script");
+          return res.text();
+        })
+        .then(script => {
+          navigator.clipboard.writeText(script).then(() => {
+            const msgEl = document.getElementById("copied");
+            msgEl.textContent = " Copied!";
+            setTimeout(() => msgEl.textContent = "", 2000);
+          });
+        })
+        .catch(err => {
           const msgEl = document.getElementById("copied");
-          msgEl.textContent = " Copied!";
-          setTimeout(() => msgEl.textContent = "", 2000);
+          msgEl.textContent = " Failed to copy";
+          console.error(err);
         });
-      })
-      .catch(err => {
-        const msgEl = document.getElementById("copied");
-        msgEl.textContent = "Access denied";
-        console.error(err);
-      });
     }
 
     function downloadScript() {
-      fetch("https://hidden-mode-5dee.casdcasca26.workers.dev/bb", {
-        headers: { "X-Lava-Key": localStorage.getItem("lava_auth") || "" }
-      })
-      .then(res => { if (!res.ok) throw new Error("Access denied"); return res.text(); })
-      .then(script => {
-        const blob = new Blob([script], { type: "text/plain" });
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "bleeding_blades.txt";
-        a.click();
-      })
-      .catch(err => {
-        const msgEl = document.getElementById("copied");
-        msgEl.textContent = " Access denied";
-        console.error(err);
-      });
+      fetch("https://hidden-mode-5dee.casdcasca26.workers.dev/bb")
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to fetch script");
+          return res.text();
+        })
+        .then(script => {
+          const blob = new Blob([script], { type: "text/plain" });
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "bleeding_blades.txt";
+          a.click();
+        })
+        .catch(err => {
+          const msgEl = document.getElementById("copied");
+          msgEl.textContent = " Failed to download";
+          console.error(err);
+        });
     }
   </script>
 
