@@ -14,16 +14,17 @@ async function submitKey() {
   }
 
   try {
-    const res = await fetch("./keys.json", { cache: "no-store" });
+    const response = await fetch("./keys.json", { cache: "no-store" });
 
-    if (!res.ok) {
+    if (!response.ok) {
       throw new Error("Failed to load keys.json");
     }
 
-    const data = await res.json();
-    console.log("Loaded keys:", data.keys); // DEBUG
+    const data = await response.json();
+    console.log("Loaded keys:", data); // DEBUG
 
-    if (data.keys.includes(input)) {
+    // Check if the key exists in your object
+    if (data[input]) {
       unlockSite();
     } else {
       error.textContent = "Invalid key";
@@ -35,7 +36,7 @@ async function submitKey() {
 }
 
 function unlockSite() {
-  console.log("Key valid, unlocking site"); // DEBUG
+  console.log("Key valid, unlocking site");
   document.getElementById("overlay").style.display = "none";
   document.getElementById("site").classList.remove("hidden");
 }
