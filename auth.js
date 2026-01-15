@@ -1,4 +1,4 @@
-// HARD PROOF THE FILE IS LOADED
+
 alert("auth.js LOADED");
 
 function submitKey() {
