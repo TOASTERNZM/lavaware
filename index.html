@@ -197,7 +197,10 @@
     function fetchScripts() {
       if (scriptsCache) return Promise.resolve(scriptsCache);
       return fetch(scriptURL)
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to fetch script");
+          return res.json();
+        })
         .then(data => {
           scriptsCache = data;
           return data;
@@ -205,23 +208,51 @@
     }
 
     function copyScript() {
-      fetchScripts().then(data => {
-        navigator.clipboard.writeText(data.bleedingBlades).then(() => {
+      fetchScripts()
+        .then(data => {
+          const scriptText = data.bleedingBlades || "";
+          if (!scriptText) throw new Error("Script not found");
+
+          navigator.clipboard.writeText(scriptText)
+            .then(() => {
+              const msgEl = document.getElementById("copied");
+              msgEl.textContent = " Copied!";
+              setTimeout(() => msgEl.textContent = "", 2000);
+            })
+            .catch(() => {
+              
+              const ta = document.createElement("textarea");
+              ta.value = scriptText;
+              document.body.appendChild(ta);
+              ta.select();
+              document.execCommand("copy");
+              document.body.removeChild(ta);
+              const msgEl = document.getElementById("copied");
+              msgEl.textContent = " Copied!";
+              setTimeout(() => msgEl.textContent = "", 2000);
+            });
+        })
+        .catch(err => {
+          console.error(err);
           const msgEl = document.getElementById("copied");
-          msgEl.textContent = "✅ Copied!";
-          setTimeout(() => msgEl.textContent = "", 2000);
+          msgEl.textContent = "Failed to copy";
         });
-      });
     }
 
     function downloadScript() {
-      fetchScripts().then(data => {
-        const blob = new Blob([data.bleedingBlades], { type: "text/plain" });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = "bleeding_blades.txt";
-        a.click();
-      });
+      fetchScripts()
+        .then(data => {
+          const blob = new Blob([data.bleedingBlades || ""], { type: "text/plain" });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = "bleeding_blades.txt";
+          a.click();
+        })
+        .catch(err => {
+          console.error(err);
+          const msgEl = document.getElementById("copied");
+          msgEl.textContent = "❌ Failed to download";
+        });
     }
   </script>
 
