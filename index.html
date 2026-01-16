@@ -224,22 +224,17 @@
     </div>
   </div>
 
-  <!-- 🔊 AUTH SOUND -->
   <audio id="authSound" src="efj.mp3" preload="auto"></audio>
 
   <script>
-    // play sound on unlock (button or Enter)
     document.getElementById("keyInput").addEventListener("keydown", e => {
       if (e.key === "Enter") {
-        document.getElementById("authSound").play();
+        const sound = document.getElementById("authSound");
+        sound.currentTime = 0;
+        sound.play();
+        submitKey();
       }
     });
-
-    const originalSubmitKey = window.submitKey;
-    window.submitKey = function () {
-      document.getElementById("authSound").play();
-      if (originalSubmitKey) originalSubmitKey();
-    };
 
     function showPage(pageId) {
       const pages = document.querySelectorAll('.page');
