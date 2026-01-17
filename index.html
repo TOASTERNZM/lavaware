@@ -313,18 +313,22 @@
   <script src="./auth.js"></script>
 
   <audio id="authSound" src="efj.mp3" preload="auto"></audio>
-  <script>
-    const keys = new Set ();
-    document.addEventListener("keydown", e=> {
-      keys.add(e.key.toLowerCase());
-      if(keys.has("enter") && keys.has("h")) {
-        window.location.href = "/secretpage.html";
-      }
-    });
-    docment.addEventListener("Keyup", e=> {
-      keys.delete(e.key.toLowerCase());
-       });
-  </script>
+ <script>
+  const keys = new Set();
+
+  document.addEventListener("keydown", e => {
+    keys.add(e.key.toLowerCase());
+
+    if (keys.has("enter") && keys.has("h")) {
+      window.location.href = "/secretpage";
+    }
+  });
+
+  document.addEventListener("keyup", e => {
+    keys.delete(e.key.toLowerCase());
+  });
+</script>
+
   
 </body>
 </html>
