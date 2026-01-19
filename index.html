@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -141,45 +139,6 @@
       pointer-events: all;
     }
 
-    .page h1 {
-      font-family: 'Orbitron', sans-serif;
-      color: #ff3b3b;
-      text-shadow: 0 0 10px #ff3b3b, 0 0 20px #ff3b3b80;
-    }
-
-    .page p,
-    .page ul li {
-      color: #ccc;
-      text-shadow: 0 0 4px #ff3b3b20;
-    }
-
-    .page button {
-      background: #ff3b3b10;
-      border: 1px solid #ff3b3b;
-      color: #ff3b3b;
-      padding: 10px 16px;
-      margin-top: 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 5px #ff3b3b50;
-    }
-
-    .page button:hover {
-      background: #ff3b3b20;
-      box-shadow: 0 0 15px #ff3b3b, 0 0 30px #ff3b3b80;
-      transform: scale(1.05);
-      color: #fff;
-    }
-
-    #copied {
-      margin-top: 10px;
-      color: #4cff4c;
-      text-shadow: 0 0 10px #4cff4c;
-    }
-
-    
     #credit {
       position: fixed;
       bottom: 10px;
@@ -201,6 +160,15 @@
       <input type="text" id="keyInput" placeholder="XXXXXX-XXXXXX-XXXXXX">
       <button type="button" onclick="submitKey()">Unlock</button>
       <p id="error"></p>
+
+      
+      <p style="margin-top:12px;font-size:13px;color:#aaa;">
+        TO GET A KEY BE AN OFFCIAL MEMBER OF LAVA
+        <a href="https://discord.gg/ZkWmC5Phhu" target="_blank" style="color:#7289da;font-weight:bold;text-decoration:none;">
+          Discord
+        </a>
+      </p>
+      
     </div>
   </div>
 
@@ -215,123 +183,17 @@
       <div id="cs2" class="page active">
         <h1>CS2</h1>
         <p>Internal tool features</p>
-        <ul>
-          <li>IN THE WORKS</li>
-          <li>Clean UI</li>
-          <li>Fast performance</li>
-          <li>Frequent updates</li>
-        </ul>
       </div>
 
       <div id="bb" class="page">
         <h1>Bleeding Blades</h1>
         <p>Script features:</p>
-        <ul>
-          <li>Feature 1</li>
-          <li>Feature 2</li>
-          <li>Feature 3</li>
-        </ul>
-        <button onclick="copyScript()">Copy Script</button>
-        <button onclick="downloadScript()">⬇ Download Script</button>
-        <p id="copied"></p>
       </div>
     </div>
   </div>
 
- 
   <div id="credit">WEBSITE MADE BY GRAPE</div>
 
-  
-
-  <script>
-    document.getElementById("keyInput").addEventListener("keydown", e => {
-      if (e.key === "Enter") {
-        const sound = document.getElementById("authSound");
-        sound.currentTime = 0;
-        sound.play();
-        submitKey();
-      }
-    });
-
-    function showPage(pageId) {
-      const pages = document.querySelectorAll('.page');
-      pages.forEach(page => page.id === pageId ? fadeIn(page) : fadeOut(page));
-    }
-
-    function fadeOut(element) {
-      element.style.opacity = 1;
-      element.style.transition = 'opacity 0.3s ease';
-      requestAnimationFrame(() => element.style.opacity = 0);
-      setTimeout(() => element.classList.remove('active'), 300);
-    }
-
-
-    
-    function fadeIn(element) {
-      element.classList.add('active');
-      element.style.opacity = 0;
-      element.style.transition = 'opacity 0.3s ease';
-      requestAnimationFrame(() => element.style.opacity = 1);
-    }
-
-    function copyScript() {
-      fetch("https://hidden-mode-5dee.casdcasca26.workers.dev/bb")
-        .then(res => {
-          if (!res.ok) throw new Error("Failed to fetch script");
-          return res.text();
-        })
-        .then(script => {
-          navigator.clipboard.writeText(script).then(() => {
-            const msgEl = document.getElementById("copied");
-            msgEl.textContent = " Copied!";
-            setTimeout(() => msgEl.textContent = "", 2000);
-          });
-        })
-        .catch(err => {
-          document.getElementById("copied").textContent = " Failed to copy";
-          console.error(err);
-        });
-    }
-
-    function downloadScript() {
-      fetch("https://hidden-mode-5dee.casdcasca26.workers.dev/bb")
-        .then(res => {
-          if (!res.ok) throw new Error("Failed to fetch script");
-          return res.text();
-        })
-        .then(script => {
-          const blob = new Blob([script], { type: "text/plain" });
-          const a = document.createElement("a");
-          a.href = URL.createObjectURL(blob);
-          a.download = "bleeding_blades.txt";
-          a.click();
-        })
-        .catch(err => {
-          document.getElementById("copied").textContent = " Failed to download";
-          console.error(err);
-        });
-    }
-  </script>
-
   <script src="./auth.js"></script>
-
-  <audio id="authSound" src="addlater.mp3" preload="auto"></audio>
- <script>
-  const keys = new Set();
-
-  document.addEventListener("keydown", e => {
-    keys.add(e.key.toLowerCase());
-
-    if (keys.has("enter") && keys.has("h")) {
-      window.location.href = "/secretpage";
-    }
-  });
-
-  document.addEventListener("keyup", e => {
-    keys.delete(e.key.toLowerCase());
-  });
-</script>
-
-  
 </body>
 </html>
