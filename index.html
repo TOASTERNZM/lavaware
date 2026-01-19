@@ -38,9 +38,14 @@
       box-shadow: 0 0 30px rgba(255,0,0,0.3);
     }
 
-    /* 🔼 MOVE ONLY THE TEXT UP */
     .modal h2 {
-      margin-top: -12px;
+      margin-bottom: 6px;
+    }
+
+    .modal h1 {
+      font-size: 14px;
+      font-weight: normal;
+      color: #aaa;
       margin-bottom: 15px;
     }
 
@@ -66,7 +71,24 @@
       font-weight: bold;
     }
 
-    .modal button:hover { background: #ff1f1f; }
+    .modal button:hover {
+      background: #ff1f1f;
+    }
+
+    .discord-link {
+      margin-top: 14px;
+      font-size: 13px;
+    }
+
+    .discord-link a {
+      color: #7289da;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .discord-link a:hover {
+      text-decoration: underline;
+    }
 
     #error {
       color: #ff5c5c;
@@ -74,47 +96,101 @@
       font-size: 14px;
     }
 
-    /* DISCORD LINK (AUTH SCREEN ONLY) */
-    #authDiscord {
-      position: fixed;
-      bottom: 20px;
-      width: 100%;
-      text-align: center;
-      font-weight: bold;
-      color: #ff3b3b;
-      text-decoration: none;
-      letter-spacing: 1px;
-      z-index: 10000;
+    .app {
+      display: flex;
+      height: 100vh;
     }
 
-    #authDiscord:hover {
-      text-shadow: 0 0 10px #ff3b3b;
+    .sidebar {
+      width: 220px;
+      background: #0a0a0a;
+      padding: 20px;
+      border-right: 1px solid #222;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 20px;
+      font-family: 'Orbitron', sans-serif;
+      color: #ff3b3b;
+    }
+
+    .sidebar button {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 12px;
+      background: #1a1a1a;
+      border: none;
+      color: #ff3b3b;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    .content {
+      flex: 1;
+      padding: 40px;
+      position: relative;
+    }
+
+    .page {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .page.active {
+      opacity: 1;
+      pointer-events: all;
     }
   </style>
 </head>
 
 <body class="locked">
 
+ 
   <div id="overlay">
     <div class="modal">
       <h2>Enter Access Key</h2>
+      <h1>To get a key be a member of lava</h1>
+
       <input type="text" id="keyInput" placeholder="XXXXXX-XXXXXX-XXXXXX">
       <button type="button" onclick="submitKey()">Unlock</button>
+
       <p id="error"></p>
+
+      
+      <div class="discord-link">
+        Need a key? Join our discord and be a offcail lava member
+        <a href="https://discord.gg/YOUR_LINK_HERE" target="_blank">Discord</a>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="site" class="hidden app">
+    <div class="sidebar">
+      <h2>Lavaware</h2>
+      <button onclick="showPage('cs2')">CS2</button>
+      <button onclick="showPage('bb')">Bleeding Blades</button>
     </div>
 
-    <!-- CLICKABLE DISCORD LINK ON AUTH SCREEN -->
-    <a
-      id="authDiscord"
-      href="https://discord.gg/YOUR_INVITE_HERE"
-      target="_blank"
-    >
-      DISCORD
-    </a>
+    <div class="content">
+      <div id="cs2" class="page active">
+        <h1>CS2</h1>
+        <p>Internal tool features</p>
+      </div>
+
+      <div id="bb" class="page">
+        <h1>Bleeding Blades</h1>
+        <p>Script features</p>
+      </div>
+    </div>
   </div>
 
   <script src="./auth.js"></script>
-  <audio id="authSound" src="addlater.mp3" preload="auto"></audio>
-
 </body>
 </html>
