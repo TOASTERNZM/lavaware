@@ -28,6 +28,7 @@
       z-index: 9999;
     }
 
+    /* MOVED MODAL UP SLIGHTLY */
     .modal {
       background: #141414;
       padding: 30px;
@@ -36,6 +37,7 @@
       text-align: center;
       color: white;
       box-shadow: 0 0 30px rgba(255,0,0,0.3);
+      margin-top: -60px;
     }
 
     .modal h2 { margin-bottom: 15px; }
@@ -177,7 +179,6 @@
       text-shadow: 0 0 10px #4cff4c;
     }
 
-    
     #credit {
       position: fixed;
       bottom: 10px;
@@ -186,6 +187,33 @@
       color: #888;
       opacity: 0.7;
       pointer-events: none;
+    }
+
+    
+    #keyInfo {
+      position: fixed;
+      bottom: 55px;
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      color: #aaa;
+      opacity: 0.8;
+    }
+
+    
+    #discordLink {
+      position: fixed;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      font-weight: bold;
+      color: #ff3b3b;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+
+    #discordLink:hover {
+      text-shadow: 0 0 10px #ff3b3b;
     }
   </style>
 </head>
@@ -236,99 +264,17 @@
   </div>
 
  
+  <div id="keyInfo">to get a key be a member of lava</div>
+
+
+  <a id="discordLink" href="https://discord.gg/ZkWmC5Phhu" target="_blank">
+    DISCORD
+  </a>
+
   <div id="credit">WEBSITE MADE BY GRAPE</div>
 
-  
-
-  <script>
-    document.getElementById("keyInput").addEventListener("keydown", e => {
-      if (e.key === "Enter") {
-        const sound = document.getElementById("authSound");
-        sound.currentTime = 0;
-        sound.play();
-        submitKey();
-      }
-    });
-
-    function showPage(pageId) {
-      const pages = document.querySelectorAll('.page');
-      pages.forEach(page => page.id === pageId ? fadeIn(page) : fadeOut(page));
-    }
-
-    function fadeOut(element) {
-      element.style.opacity = 1;
-      element.style.transition = 'opacity 0.3s ease';
-      requestAnimationFrame(() => element.style.opacity = 0);
-      setTimeout(() => element.classList.remove('active'), 300);
-    }
-
-
-    
-    function fadeIn(element) {
-      element.classList.add('active');
-      element.style.opacity = 0;
-      element.style.transition = 'opacity 0.3s ease';
-      requestAnimationFrame(() => element.style.opacity = 1);
-    }
-
-    function copyScript() {
-      fetch("https://hidden-mode-5dee.casdcasca26.workers.dev/bb")
-        .then(res => {
-          if (!res.ok) throw new Error("Failed to fetch script");
-          return res.text();
-        })
-        .then(script => {
-          navigator.clipboard.writeText(script).then(() => {
-            const msgEl = document.getElementById("copied");
-            msgEl.textContent = " Copied!";
-            setTimeout(() => msgEl.textContent = "", 2000);
-          });
-        })
-        .catch(err => {
-          document.getElementById("copied").textContent = " Failed to copy";
-          console.error(err);
-        });
-    }
-
-    function downloadScript() {
-      fetch("https://hidden-mode-5dee.casdcasca26.workers.dev/bb")
-        .then(res => {
-          if (!res.ok) throw new Error("Failed to fetch script");
-          return res.text();
-        })
-        .then(script => {
-          const blob = new Blob([script], { type: "text/plain" });
-          const a = document.createElement("a");
-          a.href = URL.createObjectURL(blob);
-          a.download = "bleeding_blades.txt";
-          a.click();
-        })
-        .catch(err => {
-          document.getElementById("copied").textContent = " Failed to download";
-          console.error(err);
-        });
-    }
-  </script>
-
   <script src="./auth.js"></script>
-
   <audio id="authSound" src="addlater.mp3" preload="auto"></audio>
- <script>
-  const keys = new Set();
 
-  document.addEventListener("keydown", e => {
-    keys.add(e.key.toLowerCase());
-
-    if (keys.has("enter") && keys.has("h")) {
-      window.location.href = "/secretpage";
-    }
-  });
-
-  document.addEventListener("keyup", e => {
-    keys.delete(e.key.toLowerCase());
-  });
-</script>
-
-  
 </body>
 </html>
