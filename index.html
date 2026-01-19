@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,16 +40,7 @@
       box-shadow: 0 0 30px rgba(255,0,0,0.3);
     }
 
-    .modal h2 {
-      margin-bottom: 6px;
-    }
-
-    .modal h1 {
-      font-size: 14px;
-      font-weight: normal;
-      color: #aaa;
-      margin-bottom: 15px;
-    }
+    .modal h2 { margin-bottom: 15px; }
 
     .modal input {
       width: 100%;
@@ -71,24 +64,7 @@
       font-weight: bold;
     }
 
-    .modal button:hover {
-      background: #ff1f1f;
-    }
-
-    .discord-link {
-      margin-top: 14px;
-      font-size: 13px;
-    }
-
-    .discord-link a {
-      color: #7289da;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .discord-link a:hover {
-      text-decoration: underline;
-    }
+    .modal button:hover { background: #ff1f1f; }
 
     #error {
       color: #ff5c5c;
@@ -106,12 +82,16 @@
       background: #0a0a0a;
       padding: 20px;
       border-right: 1px solid #222;
+      box-shadow: 0 0 20px rgba(255,0,100,0.2);
     }
 
     .sidebar h2 {
       margin-bottom: 20px;
       font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
       color: #ff3b3b;
+      text-shadow: 0 0 8px #ff3b3b, 0 0 16px #ff3b3b80;
+      letter-spacing: 1px;
     }
 
     .sidebar button {
@@ -124,12 +104,26 @@
       font-weight: bold;
       cursor: pointer;
       border-radius: 6px;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 5px #ff3b3b50;
+    }
+
+    .sidebar button:hover {
+      background: #ff3b3b10;
+      color: #fff;
+      box-shadow: 0 0 20px #ff3b3b, 0 0 40px #ff3b3b80;
+      transform: scale(1.05);
     }
 
     .content {
       flex: 1;
       padding: 40px;
       position: relative;
+      overflow: hidden;
+      background: linear-gradient(145deg, #0b0b0b, #111111);
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(255,0,100,0.3);
     }
 
     .page {
@@ -146,30 +140,69 @@
       opacity: 1;
       pointer-events: all;
     }
+
+    .page h1 {
+      font-family: 'Orbitron', sans-serif;
+      color: #ff3b3b;
+      text-shadow: 0 0 10px #ff3b3b, 0 0 20px #ff3b3b80;
+    }
+
+    .page p,
+    .page ul li {
+      color: #ccc;
+      text-shadow: 0 0 4px #ff3b3b20;
+    }
+
+    .page button {
+      background: #ff3b3b10;
+      border: 1px solid #ff3b3b;
+      color: #ff3b3b;
+      padding: 10px 16px;
+      margin-top: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 5px #ff3b3b50;
+    }
+
+    .page button:hover {
+      background: #ff3b3b20;
+      box-shadow: 0 0 15px #ff3b3b, 0 0 30px #ff3b3b80;
+      transform: scale(1.05);
+      color: #fff;
+    }
+
+    #copied {
+      margin-top: 10px;
+      color: #4cff4c;
+      text-shadow: 0 0 10px #4cff4c;
+    }
+
+    
+    #credit {
+      position: fixed;
+      bottom: 10px;
+      right: 12px;
+      font-size: 12px;
+      color: #888;
+      opacity: 0.7;
+      pointer-events: none;
+    }
   </style>
 </head>
 
 <body class="locked">
 
- 
   <div id="overlay">
     <div class="modal">
-      <h2>Enter Access Key</h2>
       <h1>To get a key be a member of lava</h1>
-
+      <h2>Enter Access Key</h2>
       <input type="text" id="keyInput" placeholder="XXXXXX-XXXXXX-XXXXXX">
       <button type="button" onclick="submitKey()">Unlock</button>
-
       <p id="error"></p>
-
-      
-      <div class="discord-link">
-        Need a key? Join our discord and be a offcail lava member
-        <a href="https://discord.gg/YOUR_LINK_HERE" target="_blank">Discord</a>
-      </div>
     </div>
   </div>
-
 
   <div id="site" class="hidden app">
     <div class="sidebar">
@@ -182,15 +215,123 @@
       <div id="cs2" class="page active">
         <h1>CS2</h1>
         <p>Internal tool features</p>
+        <ul>
+          <li>IN THE WORKS</li>
+          <li>Clean UI</li>
+          <li>Fast performance</li>
+          <li>Frequent updates</li>
+        </ul>
       </div>
 
       <div id="bb" class="page">
         <h1>Bleeding Blades</h1>
-        <p>Script features</p>
+        <p>Script features:</p>
+        <ul>
+          <li>Feature 1</li>
+          <li>Feature 2</li>
+          <li>Feature 3</li>
+        </ul>
+        <button onclick="copyScript()">Copy Script</button>
+        <button onclick="downloadScript()">⬇ Download Script</button>
+        <p id="copied"></p>
       </div>
     </div>
   </div>
 
+ 
+  <div id="credit">WEBSITE MADE BY GRAPE</div>
+
+  
+
+  <script>
+    document.getElementById("keyInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        const sound = document.getElementById("authSound");
+        sound.currentTime = 0;
+        sound.play();
+        submitKey();
+      }
+    });
+
+    function showPage(pageId) {
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(page => page.id === pageId ? fadeIn(page) : fadeOut(page));
+    }
+
+    function fadeOut(element) {
+      element.style.opacity = 1;
+      element.style.transition = 'opacity 0.3s ease';
+      requestAnimationFrame(() => element.style.opacity = 0);
+      setTimeout(() => element.classList.remove('active'), 300);
+    }
+
+
+    
+    function fadeIn(element) {
+      element.classList.add('active');
+      element.style.opacity = 0;
+      element.style.transition = 'opacity 0.3s ease';
+      requestAnimationFrame(() => element.style.opacity = 1);
+    }
+
+    function copyScript() {
+      fetch("https://hidden-mode-5dee.casdcasca26.workers.dev/bb")
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to fetch script");
+          return res.text();
+        })
+        .then(script => {
+          navigator.clipboard.writeText(script).then(() => {
+            const msgEl = document.getElementById("copied");
+            msgEl.textContent = " Copied!";
+            setTimeout(() => msgEl.textContent = "", 2000);
+          });
+        })
+        .catch(err => {
+          document.getElementById("copied").textContent = " Failed to copy";
+          console.error(err);
+        });
+    }
+
+    function downloadScript() {
+      fetch("https://hidden-mode-5dee.casdcasca26.workers.dev/bb")
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to fetch script");
+          return res.text();
+        })
+        .then(script => {
+          const blob = new Blob([script], { type: "text/plain" });
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "bleeding_blades.txt";
+          a.click();
+        })
+        .catch(err => {
+          document.getElementById("copied").textContent = " Failed to download";
+          console.error(err);
+        });
+    }
+  </script>
+
   <script src="./auth.js"></script>
+
+  <audio id="authSound" src="addlater.mp3" preload="auto"></audio>
+ <script>
+  const keys = new Set();
+
+  document.addEventListener("keydown", e => {
+    keys.add(e.key.toLowerCase());
+
+    if (keys.has("enter") && keys.has("h")) {
+      window.location.href = "/secretpage";
+    }
+  });
+
+  document.addEventListener("keyup", e => {
+    keys.delete(e.key.toLowerCase());
+  });
+</script>
+
+  
 </body>
 </html>
