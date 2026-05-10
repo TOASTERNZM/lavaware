@@ -4,30 +4,41 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lavaware</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0b0b0b;
-      --surface: #111;
-      --border: #1e1e1e;
-      --red: #ff3b3b;
-      --red-glow: rgba(255,59,59,0.25);
-      --red-faint: rgba(255,59,59,0.07);
-      --text: #e8e8e8;
-      --muted: #555;
-      --success: #4cff4c;
-      --error: #ff5c5c;
-      --font-head: 'Orbitron', sans-serif;
-      --font-mono: 'Share Tech Mono', monospace;
+      --bg:        #080808;
+      --surface:   #0e0e0e;
+      --surface2:  #131313;
+      --border:    #1c1c1c;
+      --red:       #ff2d2d;
+      --red2:      #ff5555;
+      --red-glow:  rgba(255,45,45,0.35);
+      --red-faint: rgba(255,45,45,0.06);
+      --text:      #ececec;
+      --muted:     #444;
+      --success:   #39ff7e;
+      --error:     #ff4444;
+      --font-h:    'Orbitron', sans-serif;
+      --font-m:    'JetBrains Mono', monospace;
     }
 
-    html, body { height: 100%; background: var(--bg); color: var(--text); }
+    html, body { height: 100%; background: var(--bg); color: var(--text); overflow: hidden; }
+    body { font-family: var(--font-m); cursor: default; }
 
-    body {
-      font-family: var(--font-mono);
-      overflow: hidden;
+    /* ── CUSTOM SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #ff2d2d44; border-radius: 2px; }
+
+    /* ── PARTICLE CANVAS ── */
+    #canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
     }
 
     /* ── OVERLAY ── */
@@ -39,184 +50,296 @@
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      transition: opacity 0.5s ease;
+      transition: opacity 0.6s ease;
     }
-
-    #overlay.fade-out { opacity: 0; pointer-events: none; }
+    #overlay.out { opacity: 0; pointer-events: none; }
 
     .modal {
+      position: relative;
       background: var(--surface);
       border: 1px solid #1e1e1e;
-      border-top: 2px solid var(--red);
-      padding: 2.5rem 2rem;
-      width: 320px;
+      width: 340px;
+      padding: 2.5rem 2rem 2rem;
       text-align: center;
-      box-shadow: 0 0 40px var(--red-glow), 0 0 80px rgba(255,59,59,0.1);
+      overflow: hidden;
+      animation: modalIn 0.5s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(24px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* animated top bar */
+    .modal::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+      animation: scanBar 2.5s ease-in-out infinite;
+    }
+    @keyframes scanBar {
+      0%   { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    /* corner accents */
+    .modal::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 18px; height: 18px;
+      border-top: 2px solid var(--red);
+      border-left: 2px solid var(--red);
+    }
+
+    .corner-br {
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 18px; height: 18px;
+      border-bottom: 2px solid var(--red);
+      border-right: 2px solid var(--red);
     }
 
     .modal-logo {
-      font-family: var(--font-head);
-      font-size: 1.6rem;
+      font-family: var(--font-h);
+      font-size: 1.8rem;
       font-weight: 900;
       color: var(--red);
-      text-shadow: 0 0 12px var(--red), 0 0 24px var(--red-glow);
-      letter-spacing: 2px;
-      margin-bottom: 0.4rem;
+      letter-spacing: 4px;
+      text-shadow: 0 0 16px var(--red), 0 0 40px var(--red-glow);
+      margin-bottom: 0.25rem;
+      animation: flicker 6s ease infinite;
     }
 
-    .modal-sub {
-      font-size: 0.7rem;
+    @keyframes flicker {
+      0%,94%,96%,100% { opacity: 1; }
+      95% { opacity: 0.7; }
+    }
+
+    .modal-tag {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
       color: var(--muted);
-      letter-spacing: 0.12em;
       margin-bottom: 2rem;
+      text-transform: uppercase;
     }
 
     .modal input {
       width: 100%;
-      padding: 0.75rem 1rem;
-      background: #0a0a0a;
+      padding: 0.8rem 1rem;
+      background: #060606;
       border: 1px solid var(--border);
       color: var(--text);
-      font-family: var(--font-mono);
-      font-size: 0.9rem;
-      letter-spacing: 0.12em;
+      font-family: var(--font-m);
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       text-align: center;
       outline: none;
       margin-bottom: 0.75rem;
-      transition: border-color 0.2s;
+      transition: border-color 0.25s, box-shadow 0.25s;
     }
+    .modal input:focus {
+      border-color: var(--red);
+      box-shadow: 0 0 12px var(--red-glow);
+    }
+    .modal input::placeholder { color: #222; text-transform: none; letter-spacing: 0; }
 
-    .modal input:focus { border-color: var(--red); }
-    .modal input::placeholder { color: #2a2a2a; text-transform: none; letter-spacing: 0; }
-
-    .modal button {
+    .modal-btn {
       width: 100%;
-      padding: 0.75rem;
+      padding: 0.8rem;
       background: var(--red);
       border: none;
       color: #000;
-      font-family: var(--font-head);
-      font-size: 0.7rem;
+      font-family: var(--font-h);
+      font-size: 0.65rem;
       font-weight: 700;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
       cursor: pointer;
-      transition: background 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
     }
-
-    .modal button:hover {
-      background: #ff5555;
-      box-shadow: 0 0 20px var(--red);
+    .modal-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
     }
-
-    .modal button:disabled {
-      background: #2a2a2a;
-      color: #444;
-      cursor: not-allowed;
-      box-shadow: none;
+    .modal-btn:hover::after { transform: translateX(100%); }
+    .modal-btn:hover {
+      background: var(--red2);
+      box-shadow: 0 0 24px var(--red-glow), 0 0 48px rgba(255,45,45,0.15);
     }
+    .modal-btn:active { transform: scale(0.98); }
+    .modal-btn:disabled { background: #1a1a1a; color: #333; cursor: not-allowed; box-shadow: none; }
 
     #modalStatus {
       margin-top: 0.75rem;
-      font-size: 0.72rem;
-      min-height: 1.2rem;
-      letter-spacing: 0.05em;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      min-height: 1rem;
+      transition: color 0.2s;
     }
+    #modalStatus.error   { color: var(--error); }
+    #modalStatus.loading { color: var(--muted); animation: blink 1s step-end infinite; }
+    #modalStatus.success { color: var(--success); text-shadow: 0 0 8px var(--success); }
 
-    #modalStatus.error { color: var(--error); }
-    #modalStatus.loading { color: var(--muted); animation: pulse 1.2s ease infinite; }
-    #modalStatus.success { color: var(--success); }
+    @keyframes blink { 50% { opacity: 0; } }
 
     .modal-discord {
       margin-top: 1.5rem;
-      font-size: 0.72rem;
+      font-size: 0.65rem;
       color: var(--muted);
+      letter-spacing: 0.05em;
     }
-
     .modal-discord a {
       color: #7289da;
       text-decoration: none;
-      font-weight: bold;
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+    .modal-discord a:hover {
+      color: #9aaff0;
+      text-shadow: 0 0 8px #7289da88;
     }
 
-    /* ── APP ── */
+    /* ── APP SHELL ── */
     #site {
       display: flex;
       height: 100vh;
       opacity: 0;
-      transition: opacity 0.5s ease;
+      transition: opacity 0.6s ease;
+      position: relative;
+      z-index: 1;
     }
-
     #site.visible { opacity: 1; }
 
-    /* Sidebar */
+    /* ── SIDEBAR ── */
     .sidebar {
-      width: 200px;
-      background: #0a0a0a;
+      width: 210px;
+      background: var(--surface);
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      padding: 1.5rem 1rem;
-      box-shadow: 4px 0 20px rgba(255,59,59,0.1);
+      padding: 1.75rem 1.25rem;
       flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sidebar::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 1px; height: 100%;
+      background: linear-gradient(180deg, transparent, var(--red) 40%, var(--red) 60%, transparent);
+      opacity: 0.3;
     }
 
     .sidebar-logo {
-      font-family: var(--font-head);
-      font-size: 1.1rem;
+      font-family: var(--font-h);
+      font-size: 1.15rem;
       font-weight: 900;
       color: var(--red);
-      text-shadow: 0 0 10px var(--red);
-      letter-spacing: 2px;
+      letter-spacing: 3px;
+      text-shadow: 0 0 12px var(--red), 0 0 24px var(--red-glow);
+      margin-bottom: 0.3rem;
+      animation: flicker 6s ease infinite;
+    }
+
+    .sidebar-version {
+      font-size: 0.58rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
       margin-bottom: 2rem;
-      padding-bottom: 1rem;
+      padding-bottom: 1.25rem;
       border-bottom: 1px solid var(--border);
+    }
+
+    .nav-label {
+      font-size: 0.55rem;
+      letter-spacing: 0.18em;
+      color: #2a2a2a;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+      margin-left: 0.25rem;
     }
 
     .nav-btn {
       width: 100%;
-      padding: 0.65rem 0.85rem;
-      margin-bottom: 0.5rem;
+      padding: 0.6rem 0.85rem;
+      margin-bottom: 0.3rem;
       background: transparent;
       border: 1px solid transparent;
       color: var(--muted);
-      font-family: var(--font-mono);
-      font-size: 0.78rem;
+      font-family: var(--font-m);
+      font-size: 0.72rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       text-align: left;
       cursor: pointer;
-      transition: all 0.2s ease;
-      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+      transition: color 0.25s, border-color 0.25s, background 0.25s;
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--red);
+      transform: scaleY(0);
+      transition: transform 0.25s ease;
+      transform-origin: bottom;
+    }
+
+    .nav-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, var(--red-faint), transparent);
+      opacity: 0;
+      transition: opacity 0.25s;
     }
 
     .nav-btn:hover, .nav-btn.active {
-      color: var(--red);
-      border-color: var(--border);
-      background: var(--red-faint);
-      box-shadow: 0 0 10px var(--red-glow);
+      color: var(--text);
+      border-color: #1e1e1e;
     }
+    .nav-btn:hover::before, .nav-btn.active::before { transform: scaleY(1); }
+    .nav-btn:hover::after, .nav-btn.active::after { opacity: 1; }
+    .nav-btn.active { color: var(--red); }
 
-    .nav-btn::before { content: '> '; opacity: 0; transition: opacity 0.2s; }
-    .nav-btn:hover::before, .nav-btn.active::before { opacity: 1; }
+    .nav-icon {
+      margin-right: 0.5rem;
+      font-style: normal;
+      opacity: 0.6;
+    }
 
     .sidebar-footer {
       margin-top: auto;
-      font-size: 0.6rem;
-      color: #2a2a2a;
-      letter-spacing: 0.05em;
+      font-size: 0.55rem;
+      color: #1e1e1e;
+      letter-spacing: 0.08em;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
     }
 
-    /* Content */
+    /* ── CONTENT ── */
     .content {
       flex: 1;
       overflow-y: auto;
       padding: 2.5rem 3rem;
-      background: linear-gradient(160deg, #0b0b0b 0%, #0e0e0e 100%);
       position: relative;
     }
 
-    /* subtle scan line */
+    /* scanline overlay */
     .content::before {
       content: '';
       position: fixed;
@@ -224,238 +347,394 @@
       background: repeating-linear-gradient(
         0deg,
         transparent,
-        transparent 2px,
-        rgba(255,255,255,0.01) 2px,
-        rgba(255,255,255,0.01) 4px
+        transparent 3px,
+        rgba(0,0,0,0.03) 3px,
+        rgba(0,0,0,0.03) 4px
       );
       pointer-events: none;
-      z-index: 0;
+      z-index: 100;
     }
 
-    /* Pages */
-    .page {
-      display: none;
-      position: relative;
-      z-index: 1;
-      animation: fadeIn 0.3s ease;
-    }
-
+    /* ── PAGES ── */
+    .page { display: none; animation: pageIn 0.35s ease both; }
     .page.active { display: block; }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateX(10px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .page-header {
+      display: flex;
+      align-items: flex-end;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
     }
 
     .page-title {
-      font-family: var(--font-head);
-      font-size: 1.8rem;
+      font-family: var(--font-h);
+      font-size: 2rem;
       font-weight: 900;
       color: var(--red);
-      text-shadow: 0 0 10px var(--red), 0 0 20px var(--red-glow);
-      letter-spacing: 2px;
-      margin-bottom: 0.4rem;
+      letter-spacing: 3px;
+      text-shadow: 0 0 14px var(--red), 0 0 28px var(--red-glow);
+      line-height: 1;
     }
 
-    .page-tag {
-      font-size: 0.65rem;
-      color: var(--muted);
-      letter-spacing: 0.15em;
+    .page-badge {
+      font-size: 0.55rem;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      margin-bottom: 2rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border);
+      padding: 0.2rem 0.5rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      margin-bottom: 0.2rem;
     }
 
-    .feature-list {
-      list-style: none;
-      margin-bottom: 2rem;
-    }
-
-    .feature-list li {
-      padding: 0.55rem 0;
-      border-bottom: 1px solid var(--border);
-      color: #aaa;
-      font-size: 0.82rem;
-      letter-spacing: 0.05em;
-    }
-
-    .feature-list li::before {
-      content: '─ ';
+    .page-badge.wip {
+      border-color: #ff3b3b44;
       color: var(--red);
-    }
-
-    .wip {
-      display: inline-block;
-      font-size: 0.6rem;
       background: var(--red-faint);
-      border: 1px solid var(--red);
-      color: var(--red);
-      padding: 0.1rem 0.4rem;
-      letter-spacing: 0.1em;
-      margin-left: 0.5rem;
-      vertical-align: middle;
+      animation: pulse 2s ease infinite;
     }
+
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.5; }
+    }
+
+    .page-divider {
+      height: 1px;
+      background: linear-gradient(90deg, var(--red) 0%, var(--border) 40%, transparent 100%);
+      margin: 1rem 0 2rem;
+    }
+
+    /* Feature list */
+    .features {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      color: #999;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s, color 0.25s, transform 0.2s;
+      cursor: default;
+    }
+
+    .feature-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, var(--red-faint), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .feature-item:hover {
+      border-color: #ff2d2d33;
+      color: var(--text);
+      transform: translateX(4px);
+    }
+    .feature-item:hover::before { opacity: 1; }
+
+    .feature-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 6px var(--red);
+      flex-shrink: 0;
+    }
+
+    .feature-dot.dim { background: #2a2a2a; box-shadow: none; }
 
     /* Action buttons */
-    .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+    .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 
     .action-btn {
-      padding: 0.65rem 1.25rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1.5rem;
       background: transparent;
       border: 1px solid var(--red);
       color: var(--red);
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
+      font-family: var(--font-m);
+      font-size: 0.72rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       cursor: pointer;
-      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      transition: color 0.25s, box-shadow 0.25s, transform 0.15s;
+    }
+
+    .action-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--red);
+      transform: translateX(-101%);
+      transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
     }
 
     .action-btn:hover {
-      background: var(--red-faint);
-      box-shadow: 0 0 14px var(--red-glow);
-      color: #fff;
+      color: #000;
+      box-shadow: 0 0 20px var(--red-glow);
+      transform: translateY(-2px);
     }
+    .action-btn:hover::before { transform: translateX(0); }
+    .action-btn:active { transform: translateY(0); }
+
+    .action-btn span { position: relative; z-index: 1; }
 
     .action-btn:disabled {
       opacity: 0.3;
       cursor: not-allowed;
+      transform: none;
     }
 
     #scriptStatus {
-      margin-top: 0.75rem;
-      font-size: 0.72rem;
-      letter-spacing: 0.05em;
+      margin-top: 1rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
       min-height: 1rem;
     }
-
     #scriptStatus.ok  { color: var(--success); text-shadow: 0 0 8px var(--success); }
     #scriptStatus.err { color: var(--error); }
 
-    /* Animations */
-    @keyframes pulse {
-      0%,100% { opacity: 1; }
-      50%      { opacity: 0.35; }
+    /* Status bar */
+    .statusbar {
+      position: fixed;
+      bottom: 0; left: 210px; right: 0;
+      height: 24px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+      gap: 1.5rem;
+      z-index: 50;
     }
 
+    .statusbar-item {
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .status-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 4px var(--success);
+      animation: pulse 2s ease infinite;
+    }
+
+    /* shake */
     @keyframes shake {
       0%,100% { transform: translateX(0); }
-      20%,60% { transform: translateX(-5px); }
-      40%,80% { transform: translateX(5px); }
+      20%,60% { transform: translateX(-6px); }
+      40%,80% { transform: translateX(6px); }
     }
-
     .shake { animation: shake 0.3s ease; }
   </style>
 </head>
 <body>
 
-<!-- ══ KEY GATE OVERLAY ══ -->
+<canvas id="canvas"></canvas>
+
+<!-- ══ OVERLAY ══ -->
 <div id="overlay">
   <div class="modal">
+    <div class="corner-br"></div>
     <div class="modal-logo">LAVAWARE</div>
-    <div class="modal-sub">RESTRICTED ACCESS</div>
+    <div class="modal-tag">RESTRICTED ACCESS PORTAL</div>
 
-    <input type="text" id="keyInput" placeholder="XXXXXX-XXXXXX-XXXXXX" maxlength="40" autocomplete="off" spellcheck="false" />
-    <button id="unlockBtn">UNLOCK</button>
+    <input type="text" id="keyInput" placeholder="XXXX-XXXX-XXXX" maxlength="40" autocomplete="off" spellcheck="false"/>
+    <button class="modal-btn" id="unlockBtn">ACCESS SYSTEM</button>
     <div id="modalStatus"></div>
 
     <div class="modal-discord">
-      Get a key → <a href="https://discord.gg/ZkWmC5Phhu" target="_blank">Discord</a>
+      Obtain access → <a href="https://discord.gg/ZkWmC5Phhu" target="_blank">Discord Server</a>
     </div>
   </div>
 </div>
 
-<!-- ══ MAIN APP (hidden until unlocked) ══ -->
+<!-- ══ APP ══ -->
 <div id="site">
   <div class="sidebar">
     <div class="sidebar-logo">LAVA</div>
+    <div class="sidebar-version">v2.0 · MEMBERS ONLY</div>
 
-    <button class="nav-btn active" onclick="showPage('cs2', this)">CS2</button>
-    <button class="nav-btn" onclick="showPage('bb', this)">Bleeding Blades</button>
-    <button class="nav-btn" onclick="showPage('dahood', this)">Da Hood</button>
+    <div class="nav-label">Tools</div>
+    <button class="nav-btn active" onclick="showPage('cs2', this)">
+      <i class="nav-icon">◈</i>CS2
+    </button>
+    <button class="nav-btn" onclick="showPage('bb', this)">
+      <i class="nav-icon">◈</i>Bleeding Blades
+    </button>
+    <button class="nav-btn" onclick="showPage('dahood', this)">
+      <i class="nav-icon">◈</i>Da Hood
+    </button>
 
-    <div class="sidebar-footer">MADE BY GRAPE</div>
+    <div class="sidebar-footer">CRAFTED BY GRAPE</div>
   </div>
 
   <div class="content">
 
     <!-- CS2 -->
     <div id="cs2" class="page active">
-      <div class="page-title">CS2</div>
-      <div class="page-tag">Internal Tool &nbsp;·&nbsp; Status: In Development</div>
-      <ul class="feature-list">
-        <li>Internal loader <span class="wip">WIP</span></li>
-        <li>Clean UI</li>
-        <li>Fast performance</li>
-        <li>Frequent updates</li>
-      </ul>
+      <div class="page-header">
+        <div class="page-title">CS2</div>
+        <div class="page-badge wip">In Development</div>
+      </div>
+      <div class="page-divider"></div>
+      <div class="features">
+        <div class="feature-item"><div class="feature-dot dim"></div>Internal loader — coming soon</div>
+        <div class="feature-item"><div class="feature-dot"></div>Clean lightweight UI</div>
+        <div class="feature-item"><div class="feature-dot"></div>High performance engine</div>
+        <div class="feature-item"><div class="feature-dot"></div>Frequent updates</div>
+      </div>
     </div>
 
     <!-- Bleeding Blades -->
     <div id="bb" class="page">
-      <div class="page-title">BLEEDING BLADES</div>
-      <div class="page-tag">Script &nbsp;·&nbsp; Roblox</div>
-      <ul class="feature-list">
-        <li>Feature 1</li>
-        <li>Feature 2</li>
-        <li>Feature 3</li>
-      </ul>
+      <div class="page-header">
+        <div class="page-title">BLEEDING BLADES</div>
+        <div class="page-badge">Roblox Script</div>
+      </div>
+      <div class="page-divider"></div>
+      <div class="features">
+        <div class="feature-item"><div class="feature-dot"></div>Feature 1</div>
+        <div class="feature-item"><div class="feature-dot"></div>Feature 2</div>
+        <div class="feature-item"><div class="feature-dot"></div>Feature 3</div>
+      </div>
       <div class="btn-row">
-        <button class="action-btn" id="copyBtn" onclick="copyScript()">Copy Script</button>
-        <button class="action-btn" id="dlBtn"   onclick="downloadScript()">⬇ Download</button>
+        <button class="action-btn" id="copyBtn" onclick="copyScript()">
+          <span>⧉ Copy Script</span>
+        </button>
+        <button class="action-btn" id="dlBtn" onclick="downloadScript()">
+          <span>↓ Download</span>
+        </button>
       </div>
       <div id="scriptStatus"></div>
     </div>
 
     <!-- Da Hood -->
     <div id="dahood" class="page">
-      <div class="page-title">DA HOOD</div>
-      <div class="page-tag">Script &nbsp;·&nbsp; Roblox</div>
-      <ul class="feature-list">
-        <li>Coming soon <span class="wip">WIP</span></li>
-      </ul>
+      <div class="page-header">
+        <div class="page-title">DA HOOD</div>
+        <div class="page-badge wip">Coming Soon</div>
+      </div>
+      <div class="page-divider"></div>
+      <div class="features">
+        <div class="feature-item"><div class="feature-dot dim"></div>Features being developed…</div>
+      </div>
     </div>
 
+  </div>
+
+  <!-- status bar -->
+  <div class="statusbar">
+    <div class="statusbar-item"><div class="status-dot"></div> CONNECTED</div>
+    <div class="statusbar-item">LAVAWARE SYSTEM</div>
+    <div class="statusbar-item" id="clock"></div>
   </div>
 </div>
 
 <script>
-  // ══ CONFIG — replace with your actual worker URLs ══
-  const AUTH_WORKER   = "https://dark-night-149c.casdcasca26.workers.dev";      // key validation worker
-  const SCRIPT_WORKER = "https://hidden-mode-5dee.casdcasca26.workers.dev"; // your existing script worker
-  // ═══════════════════════════════════════════════════
+  // ══ CONFIG ══
+  const AUTH_WORKER   = "https://dark-night-149c.casdcasca26.workers.dev";
+  const SCRIPT_WORKER = "https://hidden-mode-5dee.casdcasca26.workers.dev";
+  // ════════════
 
-  let sessionKey   = null;
-  let sessionToken = null;
+  // ── Particle background ──
+  const canvas = document.getElementById("canvas");
+  const ctx    = canvas.getContext("2d");
+  let W, H, particles = [];
 
-  const overlay    = document.getElementById("overlay");
-  const site       = document.getElementById("site");
-  const keyInput   = document.getElementById("keyInput");
-  const unlockBtn  = document.getElementById("unlockBtn");
-  const statusEl   = document.getElementById("modalStatus");
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener("resize", resize);
 
-  // Auto-uppercase input
+  for (let i = 0; i < 60; i++) {
+    particles.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      r: Math.random() * 1.2 + 0.2,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      a: Math.random() * 0.5 + 0.1,
+    });
+  }
+
+  function drawParticles() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,45,45,${p.a})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+
+  // ── Clock ──
+  function updateClock() {
+    const now = new Date();
+    document.getElementById("clock").textContent =
+      now.toLocaleTimeString("en-US", { hour12: false });
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // ── Auth ──
+  const overlay   = document.getElementById("overlay");
+  const site      = document.getElementById("site");
+  const keyInput  = document.getElementById("keyInput");
+  const unlockBtn = document.getElementById("unlockBtn");
+  const statusEl  = document.getElementById("modalStatus");
+
   keyInput.addEventListener("input", () => {
     keyInput.value = keyInput.value.toUpperCase().replace(/[^A-Z0-9\-]/g, "");
   });
-
   keyInput.addEventListener("keydown", e => {
     if (e.key === "Enter") unlockBtn.click();
   });
 
-  function setModalStatus(msg, type) {
+  function setStatus(msg, type) {
     statusEl.textContent = msg;
-    statusEl.className = type;
+    statusEl.className   = type;
   }
 
   unlockBtn.addEventListener("click", async () => {
     const key = keyInput.value.trim();
-    if (!key) { setModalStatus("Enter a key.", "error"); return; }
+    if (!key) { setStatus("No key entered.", "error"); return; }
 
     unlockBtn.disabled = true;
-    setModalStatus("Validating…", "loading");
+    setStatus("VERIFYING...", "loading");
 
     try {
       const res  = await fetch(`${AUTH_WORKER}/validate`, {
@@ -466,30 +745,25 @@
       const data = await res.json();
 
       if (data.valid) {
-        sessionKey   = key;
-        sessionToken = data.token;
-        setModalStatus("Access granted.", "success");
-
-        // Fade out overlay, reveal site
+        setStatus("ACCESS GRANTED", "success");
         setTimeout(() => {
-          overlay.classList.add("fade-out");
+          overlay.classList.add("out");
           site.classList.add("visible");
-          setTimeout(() => overlay.remove(), 500);
-        }, 600);
-
+          setTimeout(() => overlay.remove(), 600);
+        }, 700);
       } else {
-        setModalStatus(data.error || "Invalid key.", "error");
+        setStatus(data.error || "INVALID KEY", "error");
         keyInput.classList.add("shake");
         keyInput.addEventListener("animationend", () => keyInput.classList.remove("shake"), { once: true });
         unlockBtn.disabled = false;
       }
     } catch {
-      setModalStatus("Connection error. Try again.", "error");
+      setStatus("CONNECTION FAILED", "error");
       unlockBtn.disabled = false;
     }
   });
 
-  // ══ PAGE SWITCHING ══
+  // ── Page switching ──
   function showPage(id, btn) {
     document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
     document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
@@ -497,17 +771,17 @@
     if (btn) btn.classList.add("active");
   }
 
-  // ══ SCRIPT ACTIONS (uses your existing script worker) ══
+  // ── Script actions ──
   function setScriptStatus(msg, type) {
     const el = document.getElementById("scriptStatus");
     el.textContent = msg;
-    el.className = type;
-    if (type === "ok") setTimeout(() => el.textContent = "", 2500);
+    el.className   = type;
+    if (type === "ok") setTimeout(() => el.textContent = "", 3000);
   }
 
   async function fetchScript() {
     const res = await fetch(`${SCRIPT_WORKER}/bb`);
-    if (!res.ok) throw new Error("Failed to fetch script");
+    if (!res.ok) throw new Error("fetch failed");
     return res.text();
   }
 
@@ -515,12 +789,10 @@
     const btn = document.getElementById("copyBtn");
     btn.disabled = true;
     try {
-      const script = await fetchScript();
-      await navigator.clipboard.writeText(script);
-      setScriptStatus("✓ Copied to clipboard!", "ok");
-    } catch {
-      setScriptStatus("✗ Copy failed.", "err");
-    }
+      const s = await fetchScript();
+      await navigator.clipboard.writeText(s);
+      setScriptStatus("✓ Copied to clipboard", "ok");
+    } catch { setScriptStatus("✗ Copy failed", "err"); }
     btn.disabled = false;
   }
 
@@ -528,18 +800,15 @@
     const btn = document.getElementById("dlBtn");
     btn.disabled = true;
     try {
-      const script = await fetchScript();
+      const s = await fetchScript();
       const a = document.createElement("a");
-      a.href = URL.createObjectURL(new Blob([script], { type: "text/plain" }));
+      a.href     = URL.createObjectURL(new Blob([s], { type: "text/plain" }));
       a.download = "bleeding_blades.lua";
       a.click();
-      setScriptStatus("✓ Download started!", "ok");
-    } catch {
-      setScriptStatus("✗ Download failed.", "err");
-    }
+      setScriptStatus("✓ Download started", "ok");
+    } catch { setScriptStatus("✗ Download failed", "err"); }
     btn.disabled = false;
   }
 </script>
-
 </body>
 </html>
