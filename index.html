@@ -1,32 +1,36 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lavaware</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0b0b0b;
-      color: white;
+    :root {
+      --bg: #0b0b0b;
+      --surface: #111;
+      --border: #1e1e1e;
+      --red: #ff3b3b;
+      --red-glow: rgba(255,59,59,0.25);
+      --red-faint: rgba(255,59,59,0.07);
+      --text: #e8e8e8;
+      --muted: #555;
+      --success: #4cff4c;
+      --error: #ff5c5c;
+      --font-head: 'Orbitron', sans-serif;
+      --font-mono: 'Share Tech Mono', monospace;
     }
 
-    .hidden { display: none; }
+    html, body { height: 100%; background: var(--bg); color: var(--text); }
 
-    .page h1 {
-      font-family: 'Orbitron', sans-serif;
-      color: #ff3b3b;
-      text-shadow: 0 0 10px #ff3b3b, 0 0 20px #ff3b3b80;
-   
-  }
-    
+    body {
+      font-family: var(--font-mono);
+      overflow: hidden;
+    }
+
+    /* ── OVERLAY ── */
     #overlay {
       position: fixed;
       inset: 0;
@@ -35,331 +39,507 @@
       justify-content: center;
       align-items: center;
       z-index: 9999;
+      transition: opacity 0.5s ease;
     }
+
+    #overlay.fade-out { opacity: 0; pointer-events: none; }
 
     .modal {
-      background: #141414;
-      padding: 30px;
-      border-radius: 12px;
-      width: 300px;
+      background: var(--surface);
+      border: 1px solid #1e1e1e;
+      border-top: 2px solid var(--red);
+      padding: 2.5rem 2rem;
+      width: 320px;
       text-align: center;
-      color: white;
-      box-shadow: 0 0 30px rgba(255,0,0,0.3);
+      box-shadow: 0 0 40px var(--red-glow), 0 0 80px rgba(255,59,59,0.1);
     }
 
-    .modal h2 { margin-bottom: 15px; }
+    .modal-logo {
+      font-family: var(--font-head);
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--red);
+      text-shadow: 0 0 12px var(--red), 0 0 24px var(--red-glow);
+      letter-spacing: 2px;
+      margin-bottom: 0.4rem;
+    }
+
+    .modal-sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      margin-bottom: 2rem;
+    }
 
     .modal input {
       width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      border: none;
-      margin-bottom: 12px;
+      padding: 0.75rem 1rem;
+      background: #0a0a0a;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
       text-align: center;
-      background: #1a1a1a;
-      color: white;
+      outline: none;
+      margin-bottom: 0.75rem;
+      transition: border-color 0.2s;
     }
+
+    .modal input:focus { border-color: var(--red); }
+    .modal input::placeholder { color: #2a2a2a; text-transform: none; letter-spacing: 0; }
 
     .modal button {
       width: 100%;
-      padding: 10px;
+      padding: 0.75rem;
+      background: var(--red);
       border: none;
-      border-radius: 6px;
-      background: #ff3b3b;
-      color: white;
+      color: #000;
+      font-family: var(--font-head);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
       cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    .modal button:hover {
+      background: #ff5555;
+      box-shadow: 0 0 20px var(--red);
+    }
+
+    .modal button:disabled {
+      background: #2a2a2a;
+      color: #444;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    #modalStatus {
+      margin-top: 0.75rem;
+      font-size: 0.72rem;
+      min-height: 1.2rem;
+      letter-spacing: 0.05em;
+    }
+
+    #modalStatus.error { color: var(--error); }
+    #modalStatus.loading { color: var(--muted); animation: pulse 1.2s ease infinite; }
+    #modalStatus.success { color: var(--success); }
+
+    .modal-discord {
+      margin-top: 1.5rem;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .modal-discord a {
+      color: #7289da;
+      text-decoration: none;
       font-weight: bold;
     }
 
-    .modal button:hover { background: #ff1f1f; }
-
-    #error {
-      color: #ff5c5c;
-      margin-top: 10px;
-      font-size: 14px;
-    }
-
-    .app {
+    /* ── APP ── */
+    #site {
       display: flex;
       height: 100vh;
+      opacity: 0;
+      transition: opacity 0.5s ease;
     }
 
+    #site.visible { opacity: 1; }
+
+    /* Sidebar */
     .sidebar {
-      width: 220px;
+      width: 200px;
       background: #0a0a0a;
-      padding: 20px;
-      border-right: 1px solid #222;
-      box-shadow: 0 0 20px rgba(255,0,100,0.2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem 1rem;
+      box-shadow: 4px 0 20px rgba(255,59,59,0.1);
+      flex-shrink: 0;
     }
 
-    .sidebar h2 {
-      margin-bottom: 20px;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: bold;
-      color: #ff3b3b;
-      text-shadow: 0 0 8px #ff3b3b, 0 0 16px #ff3b3b80;
-      letter-spacing: 1px;
+    .sidebar-logo {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--red);
+      text-shadow: 0 0 10px var(--red);
+      letter-spacing: 2px;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
     }
 
-    .sidebar button {
+    .nav-btn {
       width: 100%;
-      margin-bottom: 12px;
-      padding: 12px;
-      background: #1a1a1a;
-      border: none;
-      color: #ff3b3b;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 6px;
+      padding: 0.65rem 0.85rem;
+      margin-bottom: 0.5rem;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 5px #ff3b3b50;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-radius: 2px;
     }
 
-    .sidebar button:hover {
-      background: #ff3b3b10;
-      color: #fff;
-      box-shadow: 0 0 20px #ff3b3b, 0 0 40px #ff3b3b80;
-      transform: scale(1.05);
+    .nav-btn:hover, .nav-btn.active {
+      color: var(--red);
+      border-color: var(--border);
+      background: var(--red-faint);
+      box-shadow: 0 0 10px var(--red-glow);
     }
 
+    .nav-btn::before { content: '> '; opacity: 0; transition: opacity 0.2s; }
+    .nav-btn:hover::before, .nav-btn.active::before { opacity: 1; }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 0.6rem;
+      color: #2a2a2a;
+      letter-spacing: 0.05em;
+    }
+
+    /* Content */
     .content {
       flex: 1;
-      padding: 40px;
+      overflow-y: auto;
+      padding: 2.5rem 3rem;
+      background: linear-gradient(160deg, #0b0b0b 0%, #0e0e0e 100%);
       position: relative;
-      overflow: hidden;
-      background: linear-gradient(145deg, #0b0b0b, #111111);
-      border-radius: 12px;
-      box-shadow: 0 0 30px rgba(255,0,100,0.3);
     }
- 
-    .page {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      opacity: 0;
+
+    /* subtle scan line */
+    .content::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.01) 2px,
+        rgba(255,255,255,0.01) 4px
+      );
       pointer-events: none;
-      transition: opacity 0.4s ease;
+      z-index: 0;
     }
 
-    .page.active {
-      opacity: 1;
-      pointer-events: all;
+    /* Pages */
+    .page {
+      display: none;
+      position: relative;
+      z-index: 1;
+      animation: fadeIn 0.3s ease;
     }
 
-   
+    .page.active { display: block; }
 
-    .page p,
-    .page ul li {
-      color: #ccc;
-      text-shadow: 0 0 4px #ff3b3b20;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    .page button {
-      background: #ff3b3b10;
-      border: 1px solid #ff3b3b;
-      color: #ff3b3b;
-      padding: 10px 16px;
-      margin-top: 10px;
-      border-radius: 6px;
+    .page-title {
+      font-family: var(--font-head);
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--red);
+      text-shadow: 0 0 10px var(--red), 0 0 20px var(--red-glow);
+      letter-spacing: 2px;
+      margin-bottom: 0.4rem;
+    }
+
+    .page-tag {
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .feature-list {
+      list-style: none;
+      margin-bottom: 2rem;
+    }
+
+    .feature-list li {
+      padding: 0.55rem 0;
+      border-bottom: 1px solid var(--border);
+      color: #aaa;
+      font-size: 0.82rem;
+      letter-spacing: 0.05em;
+    }
+
+    .feature-list li::before {
+      content: '─ ';
+      color: var(--red);
+    }
+
+    .wip {
+      display: inline-block;
+      font-size: 0.6rem;
+      background: var(--red-faint);
+      border: 1px solid var(--red);
+      color: var(--red);
+      padding: 0.1rem 0.4rem;
+      letter-spacing: 0.1em;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+
+    /* Action buttons */
+    .btn-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+
+    .action-btn {
+      padding: 0.65rem 1.25rem;
+      background: transparent;
+      border: 1px solid var(--red);
+      color: var(--red);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
       cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 5px #ff3b3b50;
+      transition: all 0.2s ease;
     }
 
-    .page button:hover {
-      background: #ff3b3b20;
-      box-shadow: 0 0 15px #ff3b3b, 0 0 30px #ff3b3b80;
-      transform: scale(1.05);
+    .action-btn:hover {
+      background: var(--red-faint);
+      box-shadow: 0 0 14px var(--red-glow);
       color: #fff;
     }
 
-    #copied {
-      margin-top: 10px;
-      color: #4cff4c;
-      text-shadow: 0 0 10px #4cff4c;
+    .action-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
     }
 
-    
-    #credit {
-      position: fixed;
-      bottom: 10px;
-      right: 12px;
-      font-size: 12px;
-      color: #888;
-      opacity: 0.7;
-      pointer-events: none;
+    #scriptStatus {
+      margin-top: 0.75rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+      min-height: 1rem;
     }
+
+    #scriptStatus.ok  { color: var(--success); text-shadow: 0 0 8px var(--success); }
+    #scriptStatus.err { color: var(--error); }
+
+    /* Animations */
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.35; }
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%,60% { transform: translateX(-5px); }
+      40%,80% { transform: translateX(5px); }
+    }
+
+    .shake { animation: shake 0.3s ease; }
   </style>
 </head>
+<body>
 
-<body class="locked">
+<!-- ══ KEY GATE OVERLAY ══ -->
+<div id="overlay">
+  <div class="modal">
+    <div class="modal-logo">LAVAWARE</div>
+    <div class="modal-sub">RESTRICTED ACCESS</div>
 
- <body class="locked">
+    <input type="text" id="keyInput" placeholder="XXXXXX-XXXXXX-XXXXXX" maxlength="40" autocomplete="off" spellcheck="false" />
+    <button id="unlockBtn">UNLOCK</button>
+    <div id="modalStatus"></div>
 
-  <div id="overlay">
-    <div class="modal">
-      <h2>Enter Access Key</h2>
-
-      
-      <p style="font-size:12px;color:#888;margin-bottom:12px;">
-        To get a key be an official member of Lava
-      </p>
-
-      <input type="text" id="keyInput" placeholder="XXXXXX-XXXXXX-XXXXXX">
-      <button type="button" onclick="submitKey()">Unlock</button>
-      <p id="error"></p>
-
-      
-      <p style="margin-top:12px;font-size:13px;color:#aaa;">
-        <a href="https://discord.gg/ZkWmC5Phhu" target="_blank" style="color:#7289da;font-weight:bold;text-decoration:none;">
-          Discord
-        </a>
-      </p>
+    <div class="modal-discord">
+      Get a key → <a href="https://discord.gg/ZkWmC5Phhu" target="_blank">Discord</a>
     </div>
   </div>
+</div>
 
-  <div id="site" class="hidden app">
-    <div class="sidebar">
-      <h2>Lavaware</h2>
-      <button onclick="showPage('cs2')">CS2</button>
-      <button onclick="showPage('bb')">Bleeding Blades</button>
-      <button onclick="showPage('DaHood')">DaHood</button>
-    </div>
+<!-- ══ MAIN APP (hidden until unlocked) ══ -->
+<div id="site">
+  <div class="sidebar">
+    <div class="sidebar-logo">LAVA</div>
 
-    <div class="content">
-      <div id="cs2" class="page active">
-        <h1>CS2</h1>
-        <p>Internal tool features</p>
-        <ul>
-          <li>IN THE WORKS</li>
-          <li>Clean UI</li>
-          <li>Fast performance</li>
-          <li>Frequent updates</li>
-        </ul>
-      </div>
- <div id="DaHood" class="page">
-     <h1>Da Hood</h1>
-     <p>Features:</p>
-     <ul>
-       <li>ADD LATTER</li>
-       <li>add later</li>
-     </ul>
-   </div>
+    <button class="nav-btn active" onclick="showPage('cs2', this)">CS2</button>
+    <button class="nav-btn" onclick="showPage('bb', this)">Bleeding Blades</button>
+    <button class="nav-btn" onclick="showPage('dahood', this)">Da Hood</button>
 
-      
-      <div id="bb" class="page">
-        <h1>Bleeding Blades</h1>
-        <p>Script features:</p>
-        <ul>
-          <li>lavaisgoat THAT IS THE KEY </li>
-          <li>Feature 2</li>
-          <li>Feature 3</li>
-        </ul>
-        <button onclick="copyScript()">Copy Script</button>
-        <button onclick="downloadScript()">⬇ Download Script</button>
-        <p id="copied"></p>
-      </div>
-    </div>
+    <div class="sidebar-footer">MADE BY GRAPE</div>
   </div>
 
-   
- 
-  <div id="credit">WEBSITE MADE BY GRAPE</div>
+  <div class="content">
 
-  
+    <!-- CS2 -->
+    <div id="cs2" class="page active">
+      <div class="page-title">CS2</div>
+      <div class="page-tag">Internal Tool &nbsp;·&nbsp; Status: In Development</div>
+      <ul class="feature-list">
+        <li>Internal loader <span class="wip">WIP</span></li>
+        <li>Clean UI</li>
+        <li>Fast performance</li>
+        <li>Frequent updates</li>
+      </ul>
+    </div>
 
-  <script>
-    document.getElementById("keyInput").addEventListener("keydown", e => {
-      if (e.key === "Enter") {
-        const sound = document.getElementById("authSound");
-        sound.currentTime = 0;
-        sound.play();
-        submitKey();
+    <!-- Bleeding Blades -->
+    <div id="bb" class="page">
+      <div class="page-title">BLEEDING BLADES</div>
+      <div class="page-tag">Script &nbsp;·&nbsp; Roblox</div>
+      <ul class="feature-list">
+        <li>Feature 1</li>
+        <li>Feature 2</li>
+        <li>Feature 3</li>
+      </ul>
+      <div class="btn-row">
+        <button class="action-btn" id="copyBtn" onclick="copyScript()">Copy Script</button>
+        <button class="action-btn" id="dlBtn"   onclick="downloadScript()">⬇ Download</button>
+      </div>
+      <div id="scriptStatus"></div>
+    </div>
+
+    <!-- Da Hood -->
+    <div id="dahood" class="page">
+      <div class="page-title">DA HOOD</div>
+      <div class="page-tag">Script &nbsp;·&nbsp; Roblox</div>
+      <ul class="feature-list">
+        <li>Coming soon <span class="wip">WIP</span></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ══ CONFIG — replace with your actual worker URLs ══
+  const AUTH_WORKER   = "https://YOUR-AUTH-WORKER.workers.dev";      // key validation worker
+  const SCRIPT_WORKER = "https://hidden-mode-5dee.casdcasca26.workers.dev"; // your existing script worker
+  // ═══════════════════════════════════════════════════
+
+  let sessionKey   = null;
+  let sessionToken = null;
+
+  const overlay    = document.getElementById("overlay");
+  const site       = document.getElementById("site");
+  const keyInput   = document.getElementById("keyInput");
+  const unlockBtn  = document.getElementById("unlockBtn");
+  const statusEl   = document.getElementById("modalStatus");
+
+  // Auto-uppercase input
+  keyInput.addEventListener("input", () => {
+    keyInput.value = keyInput.value.toUpperCase().replace(/[^A-Z0-9\-]/g, "");
+  });
+
+  keyInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") unlockBtn.click();
+  });
+
+  function setModalStatus(msg, type) {
+    statusEl.textContent = msg;
+    statusEl.className = type;
+  }
+
+  unlockBtn.addEventListener("click", async () => {
+    const key = keyInput.value.trim();
+    if (!key) { setModalStatus("Enter a key.", "error"); return; }
+
+    unlockBtn.disabled = true;
+    setModalStatus("Validating…", "loading");
+
+    try {
+      const res  = await fetch(`${AUTH_WORKER}/validate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key }),
+      });
+      const data = await res.json();
+
+      if (data.valid) {
+        sessionKey   = key;
+        sessionToken = data.token;
+        setModalStatus("Access granted.", "success");
+
+        // Fade out overlay, reveal site
+        setTimeout(() => {
+          overlay.classList.add("fade-out");
+          site.classList.add("visible");
+          setTimeout(() => overlay.remove(), 500);
+        }, 600);
+
+      } else {
+        setModalStatus(data.error || "Invalid key.", "error");
+        keyInput.classList.add("shake");
+        keyInput.addEventListener("animationend", () => keyInput.classList.remove("shake"), { once: true });
+        unlockBtn.disabled = false;
       }
-    });
-
-    function showPage(pageId) {
-      const pages = document.querySelectorAll('.page');
-      pages.forEach(page => page.id === pageId ? fadeIn(page) : fadeOut(page));
-    }
-
-    function fadeOut(element) {
-      element.style.opacity = 1;
-      element.style.transition = 'opacity 0.3s ease';
-      requestAnimationFrame(() => element.style.opacity = 0);
-      setTimeout(() => element.classList.remove('active'), 300);
-    }
-
-
-    
-    function fadeIn(element) {
-      element.classList.add('active');
-      element.style.opacity = 0;
-      element.style.transition = 'opacity 0.3s ease';
-      requestAnimationFrame(() => element.style.opacity = 1);
-    }
-
-    function copyScript() {
-      fetch("https://hidden-mode-5dee.casdcasca26.workers.dev/bb")
-        .then(res => {
-          if (!res.ok) throw new Error("Failed to fetch script");
-          return res.text();
-        })
-        .then(script => {
-          navigator.clipboard.writeText(script).then(() => {
-            const msgEl = document.getElementById("copied");
-            msgEl.textContent = " Copied!";
-            setTimeout(() => msgEl.textContent = "", 2000);
-          });
-        })
-        .catch(err => {
-          document.getElementById("copied").textContent = " Failed to copy";
-          console.error(err);
-        });
-    }
-
-    function downloadScript() {
-      fetch("https://hidden-mode-5dee.casdcasca26.workers.dev/bb")
-        .then(res => {
-          if (!res.ok) throw new Error("Failed to fetch script");
-          return res.text();
-        })
-        .then(script => {
-          const blob = new Blob([script], { type: "text/plain" });
-          const a = document.createElement("a");
-          a.href = URL.createObjectURL(blob);
-          a.download = "bleeding_blades.txt";
-          a.click();
-        })
-        .catch(err => {
-          document.getElementById("copied").textContent = " Failed to download";
-          console.error(err);
-        });
-    }
-  </script>
-
-  <script src="./auth.js"></script>
-
-  <audio id="authSound" src="addlater.mp3" preload="auto"></audio>
- <script>
-  const keys = new Set();
-
-  document.addEventListener("keydown", e => {
-    keys.add(e.key.toLowerCase());
-
-    if (keys.has("enter") && keys.has("h")) {
-      window.location.href = "/secretpage";
+    } catch {
+      setModalStatus("Connection error. Try again.", "error");
+      unlockBtn.disabled = false;
     }
   });
 
-  document.addEventListener("keyup", e => {
-    keys.delete(e.key.toLowerCase());
-  });
+  // ══ PAGE SWITCHING ══
+  function showPage(id, btn) {
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    if (btn) btn.classList.add("active");
+  }
+
+  // ══ SCRIPT ACTIONS (uses your existing script worker) ══
+  function setScriptStatus(msg, type) {
+    const el = document.getElementById("scriptStatus");
+    el.textContent = msg;
+    el.className = type;
+    if (type === "ok") setTimeout(() => el.textContent = "", 2500);
+  }
+
+  async function fetchScript() {
+    const res = await fetch(`${SCRIPT_WORKER}/bb`);
+    if (!res.ok) throw new Error("Failed to fetch script");
+    return res.text();
+  }
+
+  async function copyScript() {
+    const btn = document.getElementById("copyBtn");
+    btn.disabled = true;
+    try {
+      const script = await fetchScript();
+      await navigator.clipboard.writeText(script);
+      setScriptStatus("✓ Copied to clipboard!", "ok");
+    } catch {
+      setScriptStatus("✗ Copy failed.", "err");
+    }
+    btn.disabled = false;
+  }
+
+  async function downloadScript() {
+    const btn = document.getElementById("dlBtn");
+    btn.disabled = true;
+    try {
+      const script = await fetchScript();
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([script], { type: "text/plain" }));
+      a.download = "bleeding_blades.lua";
+      a.click();
+      setScriptStatus("✓ Download started!", "ok");
+    } catch {
+      setScriptStatus("✗ Download failed.", "err");
+    }
+    btn.disabled = false;
+  }
 </script>
 
-  
 </body>
 </html>
